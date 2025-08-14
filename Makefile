@@ -5,6 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRCS = Src/main.cpp
 
+
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)
