@@ -9,7 +9,7 @@
 class Client;
 class Channel;
 
-class Serverclass Server 
+class Server 
 {
 
 	private:
