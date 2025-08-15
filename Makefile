@@ -1,6 +1,6 @@
 NAME = ft_irc
 
-CC = c++
+CPP = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRCS = Src/main.cpp
@@ -11,7 +11,7 @@ OBJS = $(SRCS:.cpp=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
 
 clean:
 	rm -f $(OBJS)

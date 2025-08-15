@@ -18,9 +18,9 @@ class Server
     std::string		_password;
 
     // ===== Networking state =====
-    int							_listen_fd;   // Listening socket fd
-    std::vector<struct pollfd>	_poll_fds; // Poll list
-    bool						_running;     // Main loop flag
+    int							_listen_fd; // Listening socket fd
+    std::vector<struct pollfd>	_poll_fds;  // Poll list
+    bool						_running;   // Main loop flag
 
     // ===== Data structures =====
     std::map<int, Client*>				_fd_to_client;
@@ -36,21 +36,22 @@ class Server
     void	handleClientWrite(int fd);
     void	sendToFd(int fd, const std::string& msg);
 
+
 	public:
     // ===== Canonical form =====
-    Server();
-    Server(int port, const std::string& password);
-    Server(const Server& other);
-    Server& operator=(const Server& other);
-    ~Server();
+    		Server();
+    		Server(int port, const std::string& password);
+    		Server(const Server& other);
+    Server&	operator=(const Server& other);
+    		~Server();
 
     // ===== Getters =====
-    int getPort() const;
-    const std::string& getPassword() const;
-    bool isRunning() const;
-    const std::map<int, Client*>& getFdToClient() const;
-    const std::map<std::string, Client*>& getNickToClient() const;
-    const std::map<std::string, Channel*>& getChannels() const;
+    int										getPort() const;
+    const std::string&						getPassword() const;
+    bool									isRunning() const;
+    const std::map<int, Client*>&			getFdToClient() const;
+    const std::map<std::string, Client*>&	getNickToClient() const;
+    const std::map<std::string, Channel*>&	getChannels() const;
 
     // ===== Setters =====
     void setRunning(bool value);
