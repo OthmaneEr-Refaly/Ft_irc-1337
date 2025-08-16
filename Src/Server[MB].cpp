@@ -43,13 +43,11 @@
 	void Server::setRunning(bool value) { _running = value; }
 
 // ===== Main control =====
-void Server::run() {
-	// TODO: implement poll() main loop here (Phase 1)
-}
-
-void Server::stop() {
-	_running = false;
-}
+	void Server::run() { /* TO DO; */ }
+	void Server::stop()
+	{
+		_running = false;
+	}
 
 // ===== Internal helpers =====
 	void Server::initListenSocket() { /* TO DO; */ } 
