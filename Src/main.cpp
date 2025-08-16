@@ -109,7 +109,28 @@
 #include "../Includes/Channel.hpp"
 #include "../Includes/Server.hpp"
 
+#include <iostream>
+
 int main()
 {
+    // Create Server object
+    Server server(6667, "secret");
+
+    // Create some Client objects
+    Client client1;
+    Client client2(42); // example constructor with fd if you have it
+
+    // Create some Channel objects
+    // Channel channel1;
+    // Channel channel2("#general");
+
+    // Avoid unused variable warnings
+    (void)server;
+    (void)client1;
+    (void)client2;
+    // (void)channel1;
+    // (void)channel2;
+
+    std::cout << "Headers and .cpp files compile correctly!" << std::endl;
     return 0;
 }

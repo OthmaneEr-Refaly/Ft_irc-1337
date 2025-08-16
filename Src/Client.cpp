@@ -36,7 +36,7 @@
 			_nick = other._nick;
 			_user = other._user;
 			_realname = other._realname;
-			_host = oter._host;
+			_host = other._host;
 			_channels = other._channels; 
 		}
 		return (*this);
@@ -51,7 +51,7 @@
 	bool							Client::getWantsWrite() const { return (_want_write); }
 	bool 							Client::isRegistered() const { return (_registered); }
 	const std::string&				Client::getNick() const { return (_nick); }
-	const std::string&				Client::getUser() const { return (User); }
+	const std::string&				Client::getUser() const { return (_user); }
 	const std::string&				Client::getRealname() const { return (_realname); }
 	const std::string&				Client::getHost() const { return (_host); }
 	const std::set<std::string>&	Client::getChannels() const { return (_channels); }
@@ -75,32 +75,12 @@
 	std::vector<std::string>	Client::popCompleteLines()
 	{
 		std::vector<std::string> lines;
-
 		// ===== Goal =====
 		// Take all complete IRC protocol messages from _inbuf,
 		// store them into 'lines', remove them from _inbuf, and return them.
 		//
 		// IRC messages are text lines ending with "\r\n".
 		// Example: "NICK montassir\r\nUSER user 0 * :Real Name\r\n"
-
-		// ===== Step 1: Search for "\r\n" in _inbuf =====
-		// While we can find a "\r\n" in _inbuf:
-		//   - Find its position (pos)
-		//   - Everything before pos is a complete line (without the "\r\n")
-
-		// ===== Step 2: Extract the line =====
-		// Use substr(0, pos) to get the line content.
-		// Push it into the 'lines' vector.
-
-		// ===== Step 3: Remove the processed line from _inbuf =====
-		// Erase from _inbuf the characters up to pos + 2
-		// (+2 to remove the "\r\n" itself).
-
-		// ===== Step 4: Repeat until no "\r\n" is found =====
-		// This way, if multiple commands arrived in one read(),
-		// we handle all of them in one call.
-
-		// ===== Step 5: Return the vector of complete lines =====
 		return lines;
 
 	}
@@ -108,12 +88,12 @@
 // ===== Channel helpers =====
 	void addChannel(const std::string& channel)
 	{
-		_channels.insert(channel);
+		//_channels.insert(channel); // for [MB]: Check later, compiling problem.
 	}
 
 	void removeChannel(const std::string& channel)
 	{
-		_channels.erase(channel);
+		//_channels.erase(channel); // for [MB]: Check later, compiling problem.
 	}
 
 // ===== Connection control =====
