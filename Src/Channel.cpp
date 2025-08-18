@@ -33,15 +33,15 @@
     Channel::~Channel() {}
 
 // ===== Getters =====
-    const std::string&              Channel::getName() const { return (_name;) }
-    const std::string&              Channel::getTopic() const { return (_topic;) }
-    const std::set<Client*>&        Channel::getMembers() const { return (_members;) }
-    const std::set<Client*>&        Channel::getOperators() const { return (_operators;) }
-    const std::set<std::string>&    Channel::getInvitedNicks() const { return (_invited_nicks;) }
-    bool                            Channel::isInviteOnly() const { return (_mode_invite_only;) }
-    bool                            Channel::isTopicOpsOnly() const { return (_mode_topic_ops_only;) }
-    const std::string&              Channel::getKey() const { return (_key;) }
-    int                             Channel::getLimit() const { return (_limit;) }
+    const std::string&              Channel::getName() const { return (_name); }
+    const std::string&              Channel::getTopic() const { return (_topic); }
+    const std::set<Client*>&        Channel::getMembers() const { return (_members); }
+    const std::set<Client*>&        Channel::getOperators() const { return (_operators); }
+    const std::set<std::string>&    Channel::getInvitedNicks() const { return (_invited_nicks); }
+    bool                            Channel::isInviteOnly() const { return (_mode_invite_only); }
+    bool                            Channel::isTopicOpsOnly() const { return (_mode_topic_ops_only); }
+    const std::string&              Channel::getKey() const { return (_key); }
+    int                             Channel::getLimit() const { return (_limit); }
 
 // ======= Setters =======
     void Channel::setTopic(const std::string& topic) { _topic = topic; }
