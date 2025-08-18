@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 11:41:48 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/08/15 11:43:44 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/08/18 12:02:35 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,13 @@
 // ===== Channel helpers =====
 	void addChannel(const std::string& channel)
 	{
+		(void)channel;
 		//_channels.insert(channel); // for [MB]: Check later, compiling problem.
 	}
 
 	void removeChannel(const std::string& channel)
 	{
+		(void)channel;
 		//_channels.erase(channel); // for [MB]: Check later, compiling problem.
 	}
 

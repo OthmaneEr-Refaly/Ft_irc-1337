@@ -1,9 +1,12 @@
 NAME = ft_irc
 
-CPP = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98
+CXX = c++
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
-SRCS = Src/main.cpp Src/Server[MB].cpp Src/Client.cpp Src/Channel.cpp
+SRCS = Src/main.cpp \
+		Src/Server[MB].cpp \
+		Src/Client.cpp \
+		Src/Channel.cpp
 
 
 OBJS = $(SRCS:.cpp=.o)
@@ -11,13 +14,13 @@ OBJS = $(SRCS:.cpp=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 clean:
 	rm -f $(OBJS)
 
 fclean: clean
-
+	rm -f $(NAME)
 
 re: fclean all
 

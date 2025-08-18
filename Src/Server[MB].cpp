@@ -52,8 +52,8 @@
 // ===== Internal helpers =====
 	void Server::initListenSocket() { /* TO DO; */ } 
 	void Server::acceptNewClient() { /* TO DO; */ } 
-	void Server::removeClient(int fd) { /* TO DO; */ } 
+	void Server::removeClient(int fd) { (void)fd; /* TO DO; */ } 
 	void Server::handlePollEvents() { /* TO DO; */ } 
-	void Server::handleClientRead(int fd) { /* TO DO; */ }
-	void Server::handleClientWrite(int fd) { /* TO DO; */ } 
-	void Server::sendToFd(int fd, const std::string& msg) { /* TO DO; */ }
+	void Server::handleClientRead(int fd) { (void)fd; /* TO DO; */ }
+	void Server::handleClientWrite(int fd) { (void)fd; /* TO DO; */ } 
+	void Server::sendToFd(int fd, const std::string& msg) { (void)fd; (void)msg; /* TO DO; */ }
