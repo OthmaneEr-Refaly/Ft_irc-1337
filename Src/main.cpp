@@ -111,26 +111,45 @@
 
 #include <iostream>
 
-int main()
-{
-    // Create Server object
-    Server server(6667, "secret");
+int main() {
+    // === Test Client ===
+    Client c1(10);  // fd = 10
+    c1.setNick("Montassir");
+    c1.setUser("mb");
+    c1.setRealname("Montassir Bouifraden");
+    c1.setHost("127.0.0.1");
+    c1.setRegistered(true);
 
-    // Create some Client objects
-    Client client1;
-    Client client2(42); // example constructor with fd if you have it
+    std::cout << "Client nick: " << c1.getNick() << "\n";
+    std::cout << "Registered: " << (c1.isRegistered() ? "yes" : "no") << "\n";
 
-    // Create some Channel objects
-    // Channel channel1;
-    // Channel channel2("#general");
+    // Buffer test
+    c1.appendToInbuf("Hello World\r\n");
+    c1.enqueueOutput("Welcome!\r\n");
+    std::cout << "Inbuf: " << c1.getInbuf() << "\n";
+    std::cout << "Outbuf: " << c1.getOutbuf() << "\n";
 
-    // Avoid unused variable warnings
-    (void)server;
-    (void)client1;
-    (void)client2;
-    // (void)channel1;
-    // (void)channel2;
+    // === Test Channel ===
+    Channel ch1("#42");
+    ch1.setTopic("Welcome to ft_irc!");
+    ch1.addMember(&c1);
+    ch1.addOperator(&c1);
+    ch1.addInvite("Othman");
 
-    std::cout << "Headers and .cpp files compile correctly!" << std::endl;
+    std::cout << "Channel name: " << ch1.getName() << "\n";
+    std::cout << "Topic: " << ch1.getTopic() << "\n";
+    std::cout << "Is Montassir member? " << (ch1.isMember(&c1) ? "yes" : "no") << "\n";
+    std::cout << "Is Montassir operator? " << (ch1.isOperator(&c1) ? "yes" : "no") << "\n";
+    std::cout << "Is Othman invited? " << (ch1.isInvited("Othman") ? "yes" : "no") << "\n";
+
+    // === Test Server (basic config only) ===
+    Server s1(6667, "pass123");
+    std::cout << "Server running? " << (s1.isRunning() ? "yes" : "no") << "\n";
+    s1.setRunning(true);
+    std::cout << "Server running? " << (s1.isRunning() ? "yes" : "no") << "\n";
+    std::cout << "Server port: " << s1.getPort() << "\n";
+    std::cout << "Server password: " << s1.getPassword() << "\n";
+
     return 0;
 }
+
