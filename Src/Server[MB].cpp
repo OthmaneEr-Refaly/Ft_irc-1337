@@ -43,19 +43,17 @@
 	void Server::setRunning(bool value) { _running = value; }
 
 // ===== Main control =====
-void Server::run() {
-	// TODO: implement poll() main loop here (Phase 1)
-}
-
-void Server::stop() {
-	_running = false;
-}
+	void Server::run() { /* TO DO; */ }
+	void Server::stop()
+	{
+		_running = false;
+	}
 
 // ===== Internal helpers =====
 	void Server::initListenSocket() { /* TO DO; */ } 
 	void Server::acceptNewClient() { /* TO DO; */ } 
-	void Server::removeClient(int fd) { /* TO DO; */ } 
+	void Server::removeClient(int fd) { (void)fd; /* TO DO; */ } 
 	void Server::handlePollEvents() { /* TO DO; */ } 
-	void Server::handleClientRead(int fd) { /* TO DO; */ }
-	void Server::handleClientWrite(int fd) { /* TO DO; */ } 
-	void Server::sendToFd(int fd, const std::string& msg) { /* TO DO; */ }
+	void Server::handleClientRead(int fd) { (void)fd; /* TO DO; */ }
+	void Server::handleClientWrite(int fd) { (void)fd; /* TO DO; */ } 
+	void Server::sendToFd(int fd, const std::string& msg) { (void)fd; (void)msg; /* TO DO; */ }
