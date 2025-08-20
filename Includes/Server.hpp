@@ -5,6 +5,9 @@
 #include <map>
 #include <vector>
 #include <poll.h> // for pollfd struct
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <iostream>
 
 class Client;
 class Channel;
@@ -28,7 +31,7 @@ class Server
         std::map<std::string, Channel*>		_channels;
 
     // ===== Internal helpers (defined in .cpp) =====
-        void	initListenSocket();
+		void	initListenSocket();
         void	acceptNewClient();
         void	removeClient(int fd);
         void	handlePollEvents();
