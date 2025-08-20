@@ -4,7 +4,7 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRCS = Src/main.cpp \
-		Src/Server[MB].cpp \
+		Src/Server.cpp \
 		Src/Client.cpp \
 		Src/Channel.cpp
 
