@@ -4,6 +4,9 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <arpa/inet.h>
 
 // ===== Canonical form =====
 	Server::Server()
@@ -78,7 +81,7 @@
 		}
 		
 		my_addr.sin_family = AF_INET;
-		std::cout << "Debugging | sin_famly is =  " << my_addr.sin_family << std::endl;
+		std::cout << "Debugging | sin_family is =  " << my_addr.sin_family << std::endl;
 		my_addr.sin_port = htons(3490);
 		std::cout << "Debugging | sin_port is = " << my_addr.sin_port << std::endl;
 		my_addr.sin_addr.s_addr = INADDR_ANY;
@@ -155,16 +158,19 @@
 				acceptNewClient();
 				continue ;
 			}
-			if (result_event & POLLIN) // 2. Existing client sent data
+			if (result_event & POLLIN) 	// 2. Existing client sent data
 				handleClientRead(fd);
-			if (result_event & POLLOUT)// 3. Existing client ready to send
+			if (result_event & POLLOUT) // 3. Existing client ready to send
 				handleClientWrite(fd);
-			if (re & (POLLER | POLLHUP | POLLNVAL)) // 4. Error or disconnection
+			if (result_event & (POLLERR | POLLHUP | POLLNVAL)) // 4. Error or disconnection
 				removeClient(fd);
 		}
 	} 
 
-	void Server::acceptNewClient() { /* TO DO; */ } 
+	void Server::acceptNewClient()
+	{
+		
+	} 
 	void Server::removeClient(int fd) { (void)fd; /* TO DO; */ } 
 	void Server::handleClientRead(int fd) { (void)fd; /* TO DO; */ }
 	void Server::handleClientWrite(int fd) { (void)fd; /* TO DO; */ } 
