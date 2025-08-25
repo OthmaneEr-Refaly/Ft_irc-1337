@@ -169,7 +169,29 @@
 
 	void Server::acceptNewClient()
 	{
-		
+		struct sockaddr_in client_addr;
+		socklen_t addr_len = sizeof(client_addr);
+
+		int client_fd = accept(_listen_fd, (struct sockaddr*)&client_addr, &addr_len);
+		if (client_fd == -1)
+		{
+			perror("accept");
+			return;
+		}
+
+		fcntl(client_fd, F_SETFL, O_NONBLOCK);
+
+		struct pollfd pfd;
+		pfd.fd = client_fd;
+		pfd.events = POLLIN;
+		pfd.revents = 0;  
+		_poll_fds.push_back(pfd);
+
+		Client* new_client = new Client(client_fd);
+		_fd_to_client[client_fd] = new_client;
+
+		std::cout << "New client connected (fd=" << client_fd << ")" << std::endl;
+
 	} 
 	void Server::removeClient(int fd) { (void)fd; /* TO DO; */ } 
 	void Server::handleClientRead(int fd) { (void)fd; /* TO DO; */ }
