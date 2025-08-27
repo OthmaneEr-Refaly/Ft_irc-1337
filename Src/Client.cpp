@@ -75,27 +75,34 @@
 	std::vector<std::string>	Client::popCompleteLines()
 	{
 		std::vector<std::string> lines;
-		// ===== Goal =====
-		// Take all complete IRC protocol messages from _inbuf,
-		// store them into 'lines', remove them from _inbuf, and return them.
-		//
-		// IRC messages are text lines ending with "\r\n".
-		// Example: "NICK montassir\r\nUSER user 0 * :Real Name\r\n"
-		return lines;
+		size_t pos;
 
+		// Keep searching for complete messages ending with "\r\n"
+		while ((pos = _inbuf.find("\r\n")) != std::string::npos)
+		{
+			// Extract one complete line (up to \r\n)
+			std::string line = _inbuf.substr(0, pos);
+			lines.push_back(line);
+
+			// Remove this line (and the "\r\n") from the buffer
+			_inbuf.erase(0, pos + 2);
+		}
+
+		// Any leftover data (incomplete line) stays in _inbuf
+		return lines;
 	}
 
 // ===== Channel helpers =====
-	void addChannel(const std::string& channel)
+	void Client::addChannel(const std::string& channel)
 	{
 		(void)channel;
-		//_channels.insert(channel); // for [MB]: Check later, compiling problem.
+		_channels.insert(channel);
 	}
 
-	void removeChannel(const std::string& channel)
+	void Client::removeChannel(const std::string& channel)
 	{
 		(void)channel;
-		//_channels.erase(channel); // for [MB]: Check later, compiling problem.
+		_channels.erase(channel);
 	}
 
 // ===== Connection control =====
