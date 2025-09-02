@@ -4,9 +4,13 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRCS = Src/main.cpp \
-		Src/Server.cpp \
 		Src/Client.cpp \
-		Src/Channel.cpp
+		Src/Channel.cpp \
+		Src/Server/Server.cpp \
+		Src/Server/ServerCore.cpp \
+		Src/Server/ServerPoll.cpp \
+		Src/Server/ServerIO.cpp\
+		Src/Server/ServerInit.cpp
 
 
 OBJS = $(SRCS:.cpp=.o)
