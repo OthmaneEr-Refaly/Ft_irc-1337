@@ -309,6 +309,11 @@ void Server::initListenSocket()
 			// Later: pass to a "parseCommand(client, lines[i])" function
 			// split line into tokens, check if it's NICK, USER, JOIN, PRIVMSG, etc.
 		}
+
+
+		// ===== TEST: send a reply back =====
+		client.enqueueOutput("Hello from server!\r\n");
+		enableWriteInterest(fd);
 	}
 
 	void Server::handleClientWrite(int fd)
