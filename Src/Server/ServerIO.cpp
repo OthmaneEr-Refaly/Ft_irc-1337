@@ -15,6 +15,9 @@
 #include "../../Includes/Client.hpp"
 #include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
+#include <cctype>
+#include <cstddef>
+#include <ctype.h>
 
 void Server::acceptNewClient()
 {
@@ -97,13 +100,11 @@ void Server::handleClientRead(int fd)
 	client.appendToInbuf(data);
 
 	std::vector<std::string> lines = client.popCompleteLines(); // Extract complete lines (commands ending with "\r\n")
-
+	std::cout << lines.size() << std::endl;
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		std::cout << "Parsed command from fd " << fd << ": [" << lines[i] << "]" << std::endl;
-
-		// Later: pass to a "parseCommand(client, lines[i])" function
-		// split line into tokens, check if it's NICK, USER, JOIN, PRIVMSG, etc.
+		Command cmd = parseRawLine(lines[i]);
 	}
 
 
@@ -111,6 +112,198 @@ void Server::handleClientRead(int fd)
 	client.enqueueOutput("Hello from server!\r\n");
 	enableWriteInterest(fd);
 }
+
+
+// Server::Command	Server::parseRawLine(const std::string &line){
+	// Command cmd;
+	// std::string save_params;
+// //	NICK Othmane
+
+// //USER oth 0 * :Othmane Real Name
+	// //:nick PRIVMSG #chan aftro :hello world
+	// //Expected params = [#chan, aftro, hello world]
+	// for(size_t i = 0; i < line.size(); i++)
+	// {
+		// if (line[0] == ':')
+		// {
+			// i++;
+			// for(; i < line.size() && line[i] != ' '; i++)
+				// cmd.prefix += line[i];
+			// i++;
+		// }
+		// else
+			// cmd.prefix = "";
+		// std::cout << "the prefix is =" << cmd.prefix << std::endl;
+		
+		// for(; i < line.size() && line[i] != ' '; i++)
+			// cmd.command += line[i];
+		// for(size_t j = 0; j < cmd.command.size(); j++)
+			// cmd.command[j] = toupper(cmd.command[j]);
+		// std::cout << "the command is :" << cmd.command << std::endl;
+		
+		// for(; i < line.size(); i++) {
+			// if(line[i] == ':')
+			// {
+				// i++;
+				// for(; i < line.size(); i++)
+					// save_params += line[i];
+				// cmd.params.push_back(save_params);
+				// save_params = "";
+			// }
+			// else
+				// for(;i < line.size() && line[i] != ' '; i++)
+						// save_params += line[i];
+			// cmd.params.push_back(save_params);
+			// save_params = "";
+		// }
+		// //printing cmd.params
+		// for(size_t k = 0; k < cmd.params.size(); k++)
+			// std::cout << "the params are :" << cmd.params[k] << std::endl;
+	// }
+	// return cmd;
+// }
+
+Server::Command Server::parseRawLine(const std::string &line) {
+    Command cmd;
+    size_t pos = 0;
+    size_t len = line.size();
+
+    // ===== STEP 1: Parse Prefix (optional) =====
+    if (pos < len && line[pos] == ':') {
+        size_t spacePos = line.find(' ', pos);
+        if (spacePos == std::string::npos) {
+            return cmd; // malformed line
+        }
+        cmd.prefix = line.substr(pos + 1, spacePos - pos - 1);
+        pos = spacePos + 1;
+    }
+	std::cout << "this is the prifex" << cmd.prefix << std::endl;
+    // Skip spaces after prefix
+    while (pos < len && line[pos] == ' ') 
+        pos++;
+
+    // ===== STEP 2: Parse Command (required) =====
+    size_t spacePos = line.find(' ', pos);
+    if (spacePos == std::string::npos) {
+        cmd.command = line.substr(pos);
+		pos = std::string::npos;
+    } else {
+        cmd.command = line.substr(pos, spacePos - pos);
+        pos = spacePos + 1;
+    }
+    // Convert command to uppercase
+    for (size_t i = 0; i < cmd.command.size(); i++) {
+        cmd.command[i] = std::toupper(cmd.command[i]);
+    }
+	std::cout << "this is the command " << cmd.command << std::endl;
+
+    // ===== STEP 3: Parse Parameters =====
+    // Skip spaces before parameters
+    while (pos < len && line[pos] == ' ') 
+        pos++;
+    // Check if no parameters remain
+    if (pos >= len || pos == 0) {
+        cmd.params.clear();
+        return cmd;
+    }
+
+    // Parse all parameters
+    while (pos < len) {
+        // Handle trailing parameter (starts with ':')
+        if (line[pos] == ':') {
+            cmd.params.push_back(line.substr(pos + 1));
+            break;
+        }
+        // Handle regular parameter
+        size_t nextSpace = line.find(' ', pos);
+        if (nextSpace == std::string::npos) {
+            // Last parameter
+            cmd.params.push_back(line.substr(pos));
+            break;
+        } else {
+            // Middle parameter
+            cmd.params.push_back(line.substr(pos, nextSpace - pos));
+            pos = nextSpace + 1;
+            // Skip multiple spaces
+            while (pos < len && line[pos] == ' ') 
+                pos++;
+        }
+    }
+
+    // Debug output for parameters
+    for (size_t i = 0; i < cmd.params.size(); i++) {
+        std::cout << "this is the param[" << i << "] = " << cmd.params[i] << std::endl;
+    }
+    return cmd;
+}
+
+
+// Server::Command Server::parseRawLine(const std::string &line) {
+	// Command cmd;
+	// size_t pos = 0;
+	// size_t len = line.size();
+
+	// // 1. Prefix (optional)
+	// if (pos < len && line[pos] == ':') {
+		// size_t spacePos = line.find(' ', pos);
+		// if (spacePos == std::string::npos) {
+			// return cmd; // malformed line
+		// }
+		// cmd.prefix = line.substr(pos + 1, spacePos - pos - 1);
+		// pos = spacePos + 1;
+	// }
+	// std::cout << "this is the prefix = " << cmd.prefix << std::endl;
+	// // Skip spaces
+	// while (pos < len && line[pos] == ' ') pos++;
+
+	// // 2. Command (required)
+	// size_t spacePos = line.find(' ', pos);
+	// if (spacePos == std::string::npos) {
+		// cmd.command = line.substr(pos);
+	// } else {
+		// cmd.command = line.substr(pos, spacePos - pos);
+		// pos = spacePos + 1;
+	// }
+	// // Uppercase command
+	// for (size_t i = 0; i < cmd.command.size(); i++) {
+		// cmd.command[i] = std::toupper(cmd.command[i]);
+	// }
+	// std::cout << "this is the command = " << cmd.command << std::endl;
+	// // Skip spaces
+	
+	// while (pos < len && line[pos] == ' ') pos++;
+	// if (pos >= len || pos == 0){
+		// cmd.params.clear();
+		// return cmd;
+	// }
+	// // 3. params
+	// while (pos < len) {
+		// std::cout << "working on the params" << pos << std::endl;
+		// if (line[pos] == ':') {
+			// // Trailing param: take rest of line
+			// cmd.params.push_back(line.substr(pos + 1));
+			// break;
+		// }
+
+		// size_t nextSpace = line.find(' ', pos);
+		// if (nextSpace == std::string::npos) {
+			// cmd.params.push_back(line.substr(pos));
+			// break;
+		// } else {
+			// cmd.params.push_back(line.substr(pos, nextSpace - pos));
+			// pos = nextSpace + 1;
+			// while (pos < len && line[pos] == ' ') pos++;
+		// }
+	// }
+	// for (size_t i = 0; i < cmd.params.size(); i++) {
+		// std::cout << "this is the param[" << i << "] = " << cmd.params[i] << std::endl;
+	// }
+
+	// return cmd;
+// }
+
+
+
 
 void Server::handleClientWrite(int fd)
 {

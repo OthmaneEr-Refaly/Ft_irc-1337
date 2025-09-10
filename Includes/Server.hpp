@@ -67,6 +67,15 @@ class Server
 	// ===== Main control =====
 		void run();  // Start the server loop
 		void stop(); // Stop the server gracefully
+	//===== [OR] parsing functions ====
+		struct Command {
+    	std::string prefix;
+    	std::string command;
+    	std::vector<std::string> params;
+
+		};
+
+		Command parseRawLine(const std::string &line);
 };
 
 #endif

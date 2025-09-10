@@ -28,7 +28,7 @@ void Server::run()
 		return;
 
 	while(_running)
-		handlePollEvents(); // Handle events from clients and the server
+		handlePollEvents(); // Handle events from clients and the Server
 }
 
 void Server::stop()

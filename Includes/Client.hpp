@@ -68,6 +68,9 @@ class Client
 	
 	// ===== Connection control =====
 		void markForClose();	// Prepare client for removal
+	// =====[OR] parsing functions =====
+
+	
 };
 
 #endif
