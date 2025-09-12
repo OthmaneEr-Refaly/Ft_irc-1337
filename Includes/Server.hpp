@@ -22,7 +22,7 @@ class Server
 
 	// ===== Networking state =====
 		int							_listen_fd; // Listening socket fd
-		std::vector<struct pollfd>	_poll_fds;  // Poll list
+		std::vector<struct pollfd>	_pollTable;  // Poll list
 		bool						_running;   // Main loop flag
 
 	// ===== Data structures =====

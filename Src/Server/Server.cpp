@@ -32,11 +32,12 @@
 
 	Server& Server::operator=(const Server& other)
 	{
-		if (this != &other) {
+		if (this != &other)
+		{
 			_port          = other._port;
 			_password      = other._password;
 			_listen_fd     = other._listen_fd;
-			_poll_fds      = other._poll_fds;
+			_pollTable      = other._pollTable;
 			_running       = other._running;
 			_fd_to_client  = other._fd_to_client;
 			_nick_to_client= other._nick_to_client;

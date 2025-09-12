@@ -26,11 +26,11 @@ void Server::acceptNewClient()
 	/* How it works:                                                             */
 	/*   1. Accept a new client connection from the listening socket.            */
 	/*   2. Set the new socket to non-blocking mode.                             */
-	/*   3. Add a pollfd entry to _poll_fds.                                     */
+	/*   3. Add a pollfd entry to _pollTable.                                     */
 	/*   4. Create a new Client object and store it in _fd_to_client.            */
 	/* Key points:                                                               */
 	/*   - Log new connections for debugging.                                    */
-	/*   - New client should appear in both _fd_to_client and _poll_fds.         */
+	/*   - New client should appear in both _fd_to_client and _pollTable.         */
 	/*****************************************************************************/
 
 	struct sockaddr_in client_addr;
@@ -49,7 +49,7 @@ void Server::acceptNewClient()
 	pfd.fd = client_fd;
 	pfd.events = POLLIN;
 	pfd.revents = 0;  
-	_poll_fds.push_back(pfd);
+	_pollTable.push_back(pfd);
 
 	Client* new_client = new Client(client_fd);
 	_fd_to_client[client_fd] = new_client;
@@ -86,17 +86,19 @@ void Server::handleClientRead(int fd)
 	{
 		if (bytes_read == 0) // Client disconnected (0)
 			std::cout << "Client " << fd << " disconnected" << std::endl;
-		else // Error (-1)
-			std::cerr << "recv() error on fd " << fd << ": "
-					<< strerror(errno) << std::endl;
-
+		else if (bytes_read == -1)
+		{
+			std::cerr << "recv() error on fd " << fd << ": " 
+			<< strerror(errno) << std::endl;
+		}
+		// Handle recv() errors properly (check) before removing a client.
 		removeClient(fd);
 		return;
 	}
 
 	buffer[bytes_read] = '\0';
 
-	std::string data(buffer);
+	std::string data(buffer, bytes_read);
 	client.appendToInbuf(data);
 
 	std::vector<std::string> lines = client.popCompleteLines(); // Extract complete lines (commands ending with "\r\n")
@@ -387,12 +389,12 @@ void Server::removeClient(int fd)
 	/* Function: removeClient                                                    */
 	/* How it works:                                                             */
 	/*   1. Close the client socket.                                             */
-	/*   2. Remove fd from _poll_fds.                                            */
+	/*   2. Remove fd from _pollTable.                                            */
 	/*   3. Delete Client object and remove from _fd_to_client.                  */
 	/*   4. Remove from _nick_to_client map if client was registered.            */
 	/* Key points:                                                               */
 	/*   - Prevent memory leaks by deleting Client objects.                      */
-	/*   - Ensure fd is no longer monitored in _poll_fds.                        */
+	/*   - Ensure fd is no longer monitored in _pollTable.                        */
 	/*****************************************************************************/
 
 	std::cout << "Removing client fd=" << fd << std::endl;
@@ -403,7 +405,7 @@ void Server::removeClient(int fd)
 	// 2. Remove from poll fds
 	int idx = findPollIndex(fd);
 	if (idx != -1)
-		_poll_fds.erase(_poll_fds.begin() + idx);
+		_pollTable.erase(_pollTable.begin() + idx);
 
 	// 3. Remove from fd_to_client and delete client object
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
