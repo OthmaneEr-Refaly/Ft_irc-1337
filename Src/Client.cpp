@@ -6,11 +6,13 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 11:41:48 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/08/22 09:52:34 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/14 13:18:42 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Includes/Client.hpp"
+#include <unistd.h>
+#include <sstream>
 
 // ===== Canonical form =====
 	Client::Client() 
@@ -106,8 +108,28 @@
 	}
 
 // ===== Connection control =====
-void Client::markForClose()
+	void Client::markForClose()
+	{
+		// Will be implemented when server connection closing is handled
+		// e.g., set a "closing" flag or manipulate _fd
+	}
+
+void Client::sendNumericReply(int code, const std::string &arg, const std::string &message)
 {
-	// Will be implemented when server connection closing is handled
-	// e.g., set a "closing" flag or manipulate _fd
+	std::string			reply;
+	std::stringstream	s_code;
+
+	s_code << code;
+
+	// Format: ":server <code> <nickname> <arg> :<message>\r\n"
+	reply += "ft_irc ";
+	reply += s_code.str() + " ";
+	reply += _nick + " ";
+	if (!arg.empty())
+		reply += arg + " ";
+	if (!message.empty())
+		reply += ":" + message;
+	reply += "\r\n";
+	
+	write(_fd, reply.c_str(), reply.size());
 }

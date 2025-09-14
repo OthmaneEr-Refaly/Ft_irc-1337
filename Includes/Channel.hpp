@@ -26,11 +26,11 @@ class Channel
 
 	public:
 	// ======= Canonical form =======
-				Channel();
-				Channel(const Channel& other);
-		Channel& operator=(const Channel& other);
-				~Channel();
-				Channel(const std::string& name);
+					Channel();
+					Channel(const Channel& other);
+		Channel&	operator=(const Channel& other);
+					~Channel();
+					Channel(const std::string& name);
 
 	// ======= Getters =======
 		const std::string&              getName() const;

@@ -165,7 +165,8 @@ void Server::handleClientRead(int fd)
 	// return cmd;
 // }
 
-Server::Command Server::parseRawLine(const std::string &line) {
+	Command Server::parseRawLine(const std::string &line)
+	{
     Command cmd;
     size_t pos = 0;
     size_t len = line.size();

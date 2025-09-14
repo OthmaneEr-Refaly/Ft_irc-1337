@@ -68,9 +68,11 @@ class Client
 	
 	// ===== Connection control =====
 		void markForClose();	// Prepare client for removal
+	
+	
 	// =====[OR] parsing functions =====
 
-	
+	void sendNumericReply(int code, const std::string &arg, const std::string &message);
 };
 
 #endif
