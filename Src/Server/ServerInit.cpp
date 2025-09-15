@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 15:43:22 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/12 11:25:59 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/15 20:51:43 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "../../Includes/Client.hpp"
 #include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
+#include "../../Includes/CommandHandler.hpp"
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -85,6 +86,8 @@ void Server::initListenSocket()
         // =========== [MB] part end. =========
 
     std::cout << "the server is listening" << std::endl;
+
+	initCommandMap();
 }
 
 	

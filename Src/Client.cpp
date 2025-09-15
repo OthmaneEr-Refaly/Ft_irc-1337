@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 11:41:48 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/14 13:18:42 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/15 17:35:58 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 
 // ===== Canonical form =====
 	Client::Client() 
-		: _fd(-1), _want_write(false), _registered(false) {}
+		: _fd(-1), _want_write(false), _closing(false), _registered(false), _passOk(false) {}
 
 	Client::Client(int fd)
-		: _fd(fd), _want_write(false), _registered(false) {}
+		: _fd(fd), _want_write(false), _closing(false), _registered(false), _passOk(false) {}
 
 	Client::Client(const Client& other)
 	{
@@ -35,6 +35,8 @@
 			_outbuf = other._outbuf;
 			_want_write = other._want_write;
 			_registered = other._registered;
+			_passOk = other._passOk;
+			_closing = other._closing;
 			_nick = other._nick;
 			_user = other._user;
 			_realname = other._realname;
@@ -52,6 +54,8 @@
 	const std::string&				Client::getOutbuf() const { return (_outbuf); }
 	bool							Client::getWantsWrite() const { return (_want_write); }
 	bool 							Client::isRegistered() const { return (_registered); }
+	bool 							Client::isClosing() const { return (_closing); }
+	bool 							Client::isPassOk() const { return (_passOk); }
 	const std::string&				Client::getNick() const { return (_nick); }
 	const std::string&				Client::getUser() const { return (_user); }
 	const std::string&				Client::getRealname() const { return (_realname); }
@@ -64,6 +68,7 @@
 	void Client::setOutbuf(const std::string& buf) { _outbuf = buf; }
 	void Client::setWantsWrite(bool value) { _want_write = value; }
 	void Client::setRegistered(bool value) { _registered = value; }
+	void Client::setPassOk(bool value) { _passOk = value; }
 	void Client::setNick(const std::string& nick) { _nick = nick; }
 	void Client::setUser(const std::string& user) { _user = user; }
 	void Client::setRealname(const std::string& realname) { _realname = realname; }
@@ -108,28 +113,25 @@
 	}
 
 // ===== Connection control =====
-	void Client::markForClose()
+	void Client::markForClose(){ _closing = true; }
+
+	void Client::sendNumericReply(int code, const std::string &arg, const std::string &message)
 	{
-		// Will be implemented when server connection closing is handled
-		// e.g., set a "closing" flag or manipulate _fd
+		std::string			reply;
+		std::stringstream	s_code;
+
+		s_code << code;
+
+		// Format: ":server <code> <nickname> <arg> :<message>\r\n"
+		reply += "ft_irc ";
+		reply += s_code.str() + " ";
+		reply += _nick + " ";
+		
+		if (!arg.empty())
+			reply += arg + " ";
+		if (!message.empty())
+			reply += ":" + message;
+		reply += "\r\n";
+		
+		write(_fd, reply.c_str(), reply.size());
 	}
-
-void Client::sendNumericReply(int code, const std::string &arg, const std::string &message)
-{
-	std::string			reply;
-	std::stringstream	s_code;
-
-	s_code << code;
-
-	// Format: ":server <code> <nickname> <arg> :<message>\r\n"
-	reply += "ft_irc ";
-	reply += s_code.str() + " ";
-	reply += _nick + " ";
-	if (!arg.empty())
-		reply += arg + " ";
-	if (!message.empty())
-		reply += ":" + message;
-	reply += "\r\n";
-	
-	write(_fd, reply.c_str(), reply.size());
-}

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/12 11:25:59 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/15 12:57:06 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,22 @@ void Server::run()
 		return;
 
 	while(_running)
+	{
 		handlePollEvents(); // Handle events from clients and the Server
+		
+		// loop to check if there is client that needs to be removed.
+		for (std::map<int, Client*>::iterator it = _fd_to_client.begin(); it != _fd_to_client.end(); )
+		{
+			Client *client = it->second;
+			if(client->isClosing())
+			{
+				++it;
+				removeClient(client->getFd());
+			}
+			else
+				++it;
+		}
+	}
 }
 
 void Server::stop()

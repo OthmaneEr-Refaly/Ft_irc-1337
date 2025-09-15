@@ -59,4 +59,23 @@
 // ===== Setters =====
 	void Server::setRunning(bool value) { _running = value; }
 
+// ===== [MB] empty title ======
+	void Server::disconnectClient(int fd, const std::string &reason)
+	{
+		std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
+		if (it == _fd_to_client.end())
+			return ;
+		
+		Client *client = it->second;
+
+		if(!reason.empty())
+		{
+			std::string msg = ":" + client->getNick() + " QUIT :" + reason + "\r\n";
+			sendToFd(fd, msg); // sendToFd() function still not implemented.
+		}
+		client->markForClose();
+
+		std::cout << "marked Client Fd=" << fd << " for close ( reason: " << reason << " )" << std::endl;
+	}	
+
 

@@ -15,6 +15,8 @@
 #include "../../Includes/Client.hpp"
 #include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
+#include "../../Includes/CommandHandler.hpp"
+
 #include <cctype>
 #include <cstddef>
 #include <ctype.h>
@@ -107,6 +109,8 @@ void Server::handleClientRead(int fd)
 	{
 		std::cout << "Parsed command from fd " << fd << ": [" << lines[i] << "]" << std::endl;
 		Command cmd = parseRawLine(lines[i]);
+
+		//dispatchCommand();
 	}
 
 

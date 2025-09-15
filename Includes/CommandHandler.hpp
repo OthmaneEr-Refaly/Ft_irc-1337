@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 11:30:19 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/14 12:22:53 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/15 20:48:47 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@
 class   Client;
 struct  Command;
 
-typedef void	(*CommandFunction)(Client &, const Command &);
-void			dispatchCommand(Client &client, const Command &cmd);
-
+typedef void	(*CommandFunction)(Server &, Client &, const Command &);
+void			initCommandMap();
+void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 // registration commands:
-	void	handlePass(Client &c, const Command &cmd);
-	void	handleNick(Client &c, const Command &cmd);
-	void	handleUser(Client &c, const Command &cmd);
+	void	handlePass(Server &server, Client &c, const Command &cmd);
+	void	handleNick(Server &server, Client &c, const Command &cmd);
+	void	handleUser(Server &server, Client &c, const Command &cmd);
 	
 
 #endif

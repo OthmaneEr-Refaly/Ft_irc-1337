@@ -75,8 +75,11 @@ class Server
 		void run();  // Start the server loop
 		void stop(); // Stop the server gracefully
 		
-	//===== [OR] parsing functions ====
+	// ===== [OR] parsing functions ====
 		Command parseRawLine(const std::string &line);
+
+	// ===== [MB] empty title ======
+		void disconnectClient(int fd, const std::string &reason);	
 };
 
 #endif
