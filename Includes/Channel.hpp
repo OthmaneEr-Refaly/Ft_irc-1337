@@ -64,6 +64,11 @@ class Channel
 		bool addInvite(const std::string& nick); // Returns true if successfully added
 		void removeInvite(const std::string& nick);
 		bool isInvited(const std::string& nick) const;
+
+	// ===== JOIN/LEAVE Helpers =====
+		void handleJoin(Client* c, const std::string& key); // Add to members/operators/invites
+		bool canJoin(Client* c, const std::string& key) const; // Check invite/key/limit
+		void handleLeave(Client* c); // Remove from members/operators/invites
 };
 
 #endif

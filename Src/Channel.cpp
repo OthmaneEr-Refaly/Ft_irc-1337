@@ -100,3 +100,29 @@
     {
         return _invited_nicks.count(nick) > 0;
     }
+
+    void Channel::handleJoin(Client* c, const std::string& key){
+        if (canJoin(c, key)) {
+            addMember(c);
+            if (_members.size() == 1) {
+                addOperator(c); // First member becomes operator
+            }
+            removeInvite(c->getNick()); // Remove from invites if present
+            // Notify channel members of the new join (need to be implemented here)
+        }
+        // else {
+        //     // Handle join failure (e.g., send error message to client)
+        // }
+    }
+
+    bool Channel::canJoin(Client* c, const std::string& key) const{
+        if(_mode_invite_only && !isInvited(c->getNick()))
+            return false;
+        // if (_mode_invite_only && !(isInvited(getName())))
+        //     return false;
+        if (_key != key)
+            return false;
+        if (_limit > 0 && static_cast<int>(_members.size()) >= _limit)
+            return false;
+        return true;
+    }
