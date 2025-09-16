@@ -91,7 +91,9 @@ SRCS        = Src/main.cpp \
               Src/Server/ServerCore.cpp \
               Src/Server/ServerPoll.cpp \
               Src/Server/ServerIO.cpp \
-              Src/Server/ServerInit.cpp
+              Src/Server/ServerInit.cpp \
+			  Src/Commands/CommandHandler.cpp \
+			  Src/Commands/Registration.cpp
 
 OBJS        = $(SRCS:.cpp=.o)
 TOTAL_FILES = $(words $(SRCS))

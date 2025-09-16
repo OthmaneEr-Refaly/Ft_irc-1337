@@ -110,7 +110,7 @@ void Server::handleClientRead(int fd)
 		std::cout << "Parsed command from fd " << fd << ": [" << lines[i] << "]" << std::endl;
 		Command cmd = parseRawLine(lines[i]);
 
-		//dispatchCommand();
+		dispatchCommand(*this, client, cmd);
 	}
 
 
