@@ -79,3 +79,18 @@
 	}	
 
 
+// ===== [MB] _nick_to_client map helper functions =====
+	void	Server::registerNickname(const std::string &nick, Client *client)
+	{
+		_nick_to_client[nick] = client;
+	}
+
+	void	Server::unregisterNickname(const std::string &nick)
+	{
+		_nick_to_client.erase(nick);
+	}
+
+	bool	Server::isNicknameInUse(const std::string &nick) const
+	{
+		return (_nick_to_client.count(nick) > 0);
+	}

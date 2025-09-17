@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:22 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/16 11:26:12 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/17 12:05:29 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,14 @@ bool isNickValid(const std::string &nick)
 	if (nick.size() > 9)
 		return (false);
 	// Check NICK first char (nickname first char should be alphabetic)
-	if (!isalpha(nick[0]))
+	if (!std::isalpha(nick[0]))
 		return (false);
 	// Checkin if NICK chars are all allowed by RFC rules
 	for(size_t i = 0; i < nick.size(); i++)
 	{
 		char c = nick[i];
 
-		if (!(isalnum(c) ||  c == '-' || c == '_' || c == '[' || c == ']' || 
+		if (!(std::isalnum(c) ||  c == '-' || c == '_' || c == '[' || c == ']' || 
         					c == '\\' || c == '`' || c == '^' || c == '{' ||
 							c == '|' || c == '}'))
 		{
@@ -73,18 +73,36 @@ bool isNickValid(const std::string &nick)
 
 std::string normalizeNick(const std::string &newNick)
 {
-	(void)newNick;
+	std::string norm = newNick;
+
+	for(size_t i = 0; i < norm.size(); i++)
+	{
+		if (std::isalpha(norm[i]))
+		{
+			norm[i] = std::tolower(norm[i]);
+		}
+		else 
+		{
+			if (norm[i] == '{')
+				norm[i] = '[';
+			else if (norm[i] == '}')
+				norm[i] = '[';
+			else if (norm[i] == '|')
+				norm[i] = '\\';
+		}
+	}
+	return (norm);
 }
 
 void	handleNick(Server &server, Client &client, const Command &cmd)
 {
-	std::string	newNick = cmd.params[0];
-	
 	if (cmd.params.empty())
 	{
 		client.sendNumericReply(ERR_NONICKNAMEGIVEN, "NICK", "No Nickname given");
 		return;
 	}
+	
+	std::string	newNick = cmd.params[0];
 	
 	if (!isNickValid(newNick))
 	{
@@ -92,14 +110,44 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 		return ;
 	}
 	
-	std::string normNick = normalizeNick(newNick); //normalizeNick should be implemented
+	std::string normNick = normalizeNick(newNick);
 
+	if (server.isNicknameInUse(normNick))
+	{
+		client.sendNumericReply(ERR_NICKNAMEINUSE, newNick, "Nickname is already in use");
+    	return;
+	}
+
+	if (!client.getNick().empty())
+	{
+		std::string oldNormNick = normalizeNick(client.getNick());
+		server.unregisterNickname(oldNormNick);
+	}
+	
+	
+	client.setNick(newNick);
+
+	server.registerNickname(normNick, &client);
 	
 }
 
 void	handleUser(Server &server, Client &client, const Command &cmd)
 {
-	(void)server;
-	(void)client;
-	(void)cmd;
+
+	if (client.isRegistered())
+	{
+		client.sendNumericReply(ERR_ALREADYREGISTRED, "USER", "You may not reregister");
+		return ;
+	}
+	
+	if (cmd.params.size() < 4)
+	{
+		client.sendNumericReply(ERR_NEEDMOREPARAMS, "USER", "not enough parameters");
+		return ;
+	}
+	
+	client.setUser(cmd.params[0]);
+	client.setRealname(cmd.params[3]);
+
+	
 }

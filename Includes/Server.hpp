@@ -80,6 +80,11 @@ class Server
 
 	// ===== [MB] empty title ======
 		void disconnectClient(int fd, const std::string &reason);	
+
+	// ===== [MB] _nick_to_client map helper functions =====
+		void	registerNickname(const std::string &nick, Client *client);
+		void	unregisterNickname(const std::string &nick);
+		bool	isNicknameInUse(const std::string &nick) const;
 };
 
 #endif
