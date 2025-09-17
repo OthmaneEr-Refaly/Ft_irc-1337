@@ -111,3 +111,9 @@ void Client::markForClose()
 	// Will be implemented when server connection closing is handled
 	// e.g., set a "closing" flag or manipulate _fd
 }
+
+void Client::sendMessage(const std::string& message)
+{
+	enqueueOutput(message + "\r\n");
+	_want_write = true; // Ensure we want to write when there's data to send
+}

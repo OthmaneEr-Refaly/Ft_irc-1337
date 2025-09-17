@@ -69,6 +69,11 @@ class Channel
 		void handleJoin(Client* c, const std::string& key); // Add to members/operators/invites
 		bool canJoin(Client* c, const std::string& key) const; // Check invite/key/limit
 		void handleLeave(Client* c); // Remove from members/operators/invites
+		void notifyMembers(const std::string& message);
+		void handlePart(Client* c);
+		void handleTopic(Client* c ,const std::string& topic);
+		void handleMode(Client* c, const std::string& mode, const std::string& params);
+
 };
 
 #endif

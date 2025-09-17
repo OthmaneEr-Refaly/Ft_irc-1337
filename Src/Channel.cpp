@@ -101,18 +101,43 @@
         return _invited_nicks.count(nick) > 0;
     }
 
-    void Channel::handleJoin(Client* c, const std::string& key){
+    void Channel::handleJoin(Client* c, const std::string& key) {
+        if (isMember(c)) {
+            c->sendMessage("443 " + c->getNick() + " " + _name + " :is already on channel");
+            return;
+        }
+
         if (canJoin(c, key)) {
             addMember(c);
             if (_members.size() == 1) {
                 addOperator(c); // First member becomes operator
             }
             removeInvite(c->getNick()); // Remove from invites if present
-            // Notify channel members of the new join (need to be implemented here)
+
+            // Notify all members of the new join
+            notifyMembers(":" + c->getNick() + " JOIN " + _name);
+
+            // Send the topic to the joining client
+            if (!_topic.empty()) {
+                c->sendMessage(":" + _name + " TOPIC :" + _topic);
+            }
+
+            // Send the list of current members to the joining client
+            std::string memberList = ":";
+            for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
+                memberList += (*it)->getNick() + " ";
+            }
+            c->sendMessage(memberList);
+        } else {
+            // Handle join failure
+            if (_mode_invite_only && !isInvited(c->getNick())) {
+                c->sendMessage("473 " + c->getNick() + " " + _name + " :Cannot join channel (+i)");
+            } else if (!_key.empty() && _key != key) {
+                c->sendMessage("475 " + c->getNick() + " " + _name + " :Cannot join channel (+k)");
+            } else if (_limit > 0 && static_cast<int>(_members.size()) >= _limit) {
+                c->sendMessage("471 " + c->getNick() + " " + _name + " :Cannot join channel (+l)");
+            }
         }
-        // else {
-        //     // Handle join failure (e.g., send error message to client)
-        // }
     }
 
     bool Channel::canJoin(Client* c, const std::string& key) const{
@@ -125,4 +150,105 @@
         if (_limit > 0 && static_cast<int>(_members.size()) >= _limit)
             return false;
         return true;
+    }
+
+    void Channel::notifyMembers(const std::string& message) {
+        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
+            (*it)->sendMessage(message);
+        }
+    }
+
+    void Channel::handlePart(Client* c) {
+        if (isMember(c)) {
+            removeMember(c);
+
+            // The Client might be a members and Operator at the same time, so i need to check that as well.
+            if (isOperator(c)) {
+                removeOperator(c);
+                notifyMembers(":" + c->getNick() + " PART " + _name + " :Operator has left the channel");
+            } else {
+                notifyMembers(":" + c->getNick() + " PART " + _name);
+            }
+
+            c->sendMessage(":" + c->getNick() + " PART " + _name + " :You have left the channel");
+        } else {
+            c->sendMessage("442 " + c->getNick() + " " + _name + " :You're not on that channel");
+        }
+    }
+
+    void Channel::handleTopic(Client* c, const std::string& topic) {
+        if (!isMember(c)) {
+            c->sendMessage("442 " + c->getNick() + " " + _name + " :You're not on that channel");
+            return;
+        }
+
+        if (topic.empty()) {
+            if (!_topic.empty()) {
+                c->sendMessage("332 " + c->getNick() + " " + _name + " :" + _topic);
+            } else {
+                c->sendMessage("331 " + c->getNick() + " " + _name + " :No topic is set");
+            }
+            return;
+        }
+
+        if (_mode_topic_ops_only && !isOperator(c)) {
+            c->sendMessage("482 " + c->getNick() + " " + _name + " :You're not a channel operator");
+            return;
+        }
+
+        setTopic(topic);
+
+        notifyMembers(":" + c->getNick() + " TOPIC " + _name + " :" + topic);
+    }
+
+    void Channel::handleMode(Client* c, const std::string& mode, const std::string& param) {
+        if (!isOperator(c)) {
+            c->sendMessage("482 " + c->getNick() + " " + _name + " :You're not a channel operator");
+            return;
+        }
+
+        bool addMode = true;
+        for (size_t i = 0; i < mode.size(); ++i) {
+            char modeChar = mode[i];
+
+            if (modeChar == '+') {
+                addMode = true;
+                continue;
+            } else if (modeChar == '-') {
+                addMode = false;
+                continue;
+            }
+
+            switch (modeChar) {
+                case 'i':
+                    _mode_invite_only = addMode;
+                    break;
+
+                case 't':
+                    _mode_topic_ops_only = addMode;
+                    break;
+
+                case 'k':
+                    if (addMode) {
+                        _key = param;
+                    } else {
+                        _key.clear();
+                    }
+                    break;
+
+                case 'l':
+                    if (addMode) {
+                        _limit = std::atoi(param.c_str());
+                    } else {
+                        _limit = 0; 
+                    }
+                    break;
+
+                default:
+                    c->sendMessage("501 " + c->getNick() + " " + _name + " :Unknown mode flag");
+                    break;
+            }
+        }
+
+        notifyMembers(":" + c->getNick() + " MODE " + _name + " " + mode + " " + param);
     }
