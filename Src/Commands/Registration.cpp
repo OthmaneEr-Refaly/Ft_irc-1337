@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:22 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/17 12:05:29 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/17 14:21:18 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ void	handlePass(Server &server, Client &client, const Command &cmd)
 	else
 		client.setPassOk(true);
 	
-    // Step 4: Optional debug log
-    std::cout << "Client " << client.getNick() << " set password: " << cmd.params[0] << std::endl;
+    //std::cout << "Client " << client.getNick() << " set password: " << cmd.params[0] << std::endl;
+
+	server.tryRegister(client);
 }
 
 bool isNickValid(const std::string &nick)
@@ -128,12 +129,13 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 	client.setNick(newNick);
 
 	server.registerNickname(normNick, &client);
-	
+
+	server.tryRegister(client);	
 }
 
 void	handleUser(Server &server, Client &client, const Command &cmd)
 {
-
+	
 	if (client.isRegistered())
 	{
 		client.sendNumericReply(ERR_ALREADYREGISTRED, "USER", "You may not reregister");
@@ -149,5 +151,5 @@ void	handleUser(Server &server, Client &client, const Command &cmd)
 	client.setUser(cmd.params[0]);
 	client.setRealname(cmd.params[3]);
 
-	
+	server.tryRegister(client);
 }

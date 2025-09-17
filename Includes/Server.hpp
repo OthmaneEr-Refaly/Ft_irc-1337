@@ -21,7 +21,6 @@ struct Command
 
 class Server 
 {
-
 	private:
 	// ===== Configuration =====
 		int				_port;
@@ -79,7 +78,8 @@ class Server
 		Command parseRawLine(const std::string &line);
 
 	// ===== [MB] empty title ======
-		void disconnectClient(int fd, const std::string &reason);	
+		void	disconnectClient(int fd, const std::string &reason);
+		void	tryRegister(Client &client);
 
 	// ===== [MB] _nick_to_client map helper functions =====
 		void	registerNickname(const std::string &nick, Client *client);
