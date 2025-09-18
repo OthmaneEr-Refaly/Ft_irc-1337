@@ -91,7 +91,9 @@ SRCS        = Src/main.cpp \
               Src/Server/ServerCore.cpp \
               Src/Server/ServerPoll.cpp \
               Src/Server/ServerIO.cpp \
-              Src/Server/ServerInit.cpp
+              Src/Server/ServerInit.cpp \
+			  Src/Commands/CommandHandler.cpp \
+			  Src/Commands/Registration.cpp
 
 OBJS        = $(SRCS:.cpp=.o)
 TOTAL_FILES = $(words $(SRCS))
@@ -106,7 +108,7 @@ all: banner $(NAME) success
 $(NAME): $(OBJS)
 	@echo "$(BMAGENTA)"
 	@echo "╔════════════════════════════════════════════════════════════════╗"
-	@echo "║                        🔗 LINKING PHASE 🔗                    ║"
+	@echo "║                        🔗 LINKING PHASE 🔗                     ║"
 	@echo "╚════════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
 	@printf "$(BCYAN)⚡ Creating executable: $(BWHITE)$(NAME)$(RESET)\n"
@@ -123,7 +125,7 @@ $(NAME): $(OBJS)
 clean:
 	@echo "$(BRED)"
 	@echo "╔════════════════════════════════════════════════════════════════╗"
-	@echo "║                        🧹 CLEANING UP 🧹                      ║"
+	@echo "║                        🧹 CLEANING UP 🧹                       ║"
 	@echo "╚════════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
 	@printf "$(BYELLOW)🗑️  Removing object files...$(RESET)\n"
@@ -144,23 +146,23 @@ re: fclean all
 banner:
 	@clear
 	@echo "$(BMAGENTA)"
-	@echo "╔══════════════════════════════════════════════════════════════════════════╗"
-	@echo "║                                                                          ║"
-	@echo "║    $(BWHITE)███████╗████████╗      ██╗██████╗  ██████╗$(BMAGENTA)                      ║"
-	@echo "║    $(BWHITE)██╔════╝╚══██╔══╝      ██║██╔══██╗██╔════╝$(BMAGENTA)                      ║"
-	@echo "║    $(BWHITE)█████╗     ██║         ██║██████╔╝██║     $(BMAGENTA)                      ║"
-	@echo "║    $(BWHITE)██╔══╝     ██║         ██║██╔══██╗██║     $(BMAGENTA)                      ║"
-	@echo "║    $(BWHITE)██║        ██║███████╗ ██║██║  ██║╚██████╗$(BMAGENTA)                      ║"
-	@echo "║    $(BWHITE)╚═╝        ╚═╝╚══════╝ ╚═╝╚═╝  ╚═╝ ╚═════╝$(BMAGENTA)                      ║"
-	@echo "║                                                                          ║"
-	@echo "║    $(BCYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(BMAGENTA)    ║"
-	@echo "║                                                                          ║"
-	@echo "║    $(BGREEN)🚀 Internet Relay Chat Server Implementation$(BMAGENTA)                   ║"
-	@echo "║    $(BYELLOW)👨‍💻 Project Leader howa: $(BRED)Montasiiiir$(BMAGENTA)                                ║"
-	@echo "║    $(BCYAN)📅 Built with: C++98 Standard$(BMAGENTA)                                    ║"
-	@echo "║    $(BWHITE)⚡ Compiler: $(CXX) with $(CXXFLAGS)$(BMAGENTA)                ║"
-	@echo "║                                                                          ║"
-	@echo "╚══════════════════════════════════════════════════════════════════════════╝"
+	@echo "╔══════════════════════════════════════════════════════════════════════╗"
+	@echo "║                                                                      ║"
+	@echo "║    $(BWHITE)███████╗████████╗      ██╗██████╗  ██████╗$(BMAGENTA)                        ║"
+	@echo "║    $(BWHITE)██╔════╝╚══██╔══╝      ██║██╔══██╗██╔════╝$(BMAGENTA)                        ║"
+	@echo "║    $(BWHITE)█████╗     ██║         ██║██████╔╝██║     $(BMAGENTA)                        ║"
+	@echo "║    $(BWHITE)██╔══╝     ██║         ██║██╔══██╗██║     $(BMAGENTA)                        ║"
+	@echo "║    $(BWHITE)██║        ██║███████╗ ██║██║  ██║╚██████╗$(BMAGENTA)                        ║"
+	@echo "║    $(BWHITE)╚═╝        ╚═╝╚══════╝ ╚═╝╚═╝  ╚═╝ ╚═════╝$(BMAGENTA)                        ║"
+	@echo "║                                                                      ║"
+	@echo "║    $(BCYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(BMAGENTA)                       ║"
+	@echo "║                                                                      ║"
+	@echo "║    $(BGREEN)🚀 Internet Relay Chat Server Implementation$(BMAGENTA)                      ║"
+	@echo "║    $(BYELLOW)👨‍💻 Project Leader howa: $(BRED)Montasiiiir$(BMAGENTA)                             ║"
+	@echo "║    $(BCYAN)📅 Built with: C++98 Standard$(BMAGENTA)                                     ║"
+	@echo "║    $(BWHITE)⚡ Compiler: $(CXX) with $(CXXFLAGS)$(BMAGENTA)            ║"
+	@echo "║                                                                      ║"
+	@echo "╚══════════════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
 	@echo ""
 	@echo "$(BBLUE)📦 Starting compilation process...$(RESET)"
@@ -171,11 +173,11 @@ success:
 	@echo "$(BGREEN)"
 	@echo "╔══════════════════════════════════════════════════════════════════════════╗"
 	@echo "║                                                                          ║"
-	@echo "║    $(BWHITE)🎉 COMPILATION SUCCESSFUL! 🎉$(BGREEN)                                    ║"
+	@echo "║    $(BWHITE)🎉 COMPILATION SUCCESSFUL! 🎉$(BGREEN)                                         ║"
 	@echo "║                                                                          ║"
-	@echo "║    $(BCYAN)✨ Your ft_irc server is ready to rock! ✨$(BGREEN)                       ║"
+	@echo "║    $(BCYAN)✨ Your ft_irc server is ready to rock! ✨$(BGREEN)                            ║"
 	@echo "║                                                                          ║"
-	@echo "║    $(BYELLOW)Usage: ./$(NAME) <port> <password>$(BGREEN)                              ║"
+	@echo "║    $(BYELLOW)Usage: ./$(NAME) <port> <password>$(BGREEN)                                     ║"
 	@echo "║                                                                          ║"
 	@echo "╚══════════════════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
@@ -183,7 +185,7 @@ success:
 info:
 	@echo "$(BCYAN)"
 	@echo "╔══════════════════════════════════════════════════════════════════════════╗"
-	@echo "║                          📋 PROJECT INFO 📋                             ║"
+	@echo "║                          📋 PROJECT INFO 📋                              ║"
 	@echo "╚══════════════════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
 	@echo "$(BWHITE)Project:$(RESET)     $(BGREEN)$(NAME)$(RESET)"
@@ -196,7 +198,7 @@ info:
 help:
 	@echo "$(BBLUE)"
 	@echo "╔══════════════════════════════════════════════════════════════════════════╗"
-	@echo "║                            🆘 HELP MENU 🆘                              ║"
+	@echo "║                            🆘 HELP MENU 🆘                               ║"
 	@echo "╚══════════════════════════════════════════════════════════════════════════╝"
 	@echo "$(RESET)"
 	@echo "$(BWHITE)Available commands:$(RESET)"

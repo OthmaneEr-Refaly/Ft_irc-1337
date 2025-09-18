@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/02 16:26:06 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/15 12:57:06 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,22 @@ void Server::run()
 		return;
 
 	while(_running)
+	{
 		handlePollEvents(); // Handle events from clients and the Server
+		
+		// loop to check if there is client that needs to be removed.
+		for (std::map<int, Client*>::iterator it = _fd_to_client.begin(); it != _fd_to_client.end(); )
+		{
+			Client *client = it->second;
+			if(client->isClosing())
+			{
+				++it;
+				removeClient(client->getFd());
+			}
+			else
+				++it;
+		}
+	}
 }
 
 void Server::stop()
@@ -40,22 +55,22 @@ void Server::handlePollEvents()
 	/*****************************************************************************/
 	/* Function: handlePollEvents 												 */
 	/* How it works : 												 			 */
-	/*   1. Poll all fds in _poll_fds with timeout 1000ms.                       */
+	/*   1. Poll all fds in _pollTable with timeout 1000ms.                       */
 	/*   2. Iterate through poll results:                                        */
 	/*      - Listening socket ready -> acceptNewClient()                        */
 	/*      - Client fd ready for read -> handleClientRead(fd)                   */
 	/*      - Client fd ready for write -> handleClientWrite(fd)                 */
 	/*      - Error / disconnect -> removeClient(fd)                             */
 	/* Key points:                                                               */
-	/*   - Ensure _poll_fds contains listening socket.                           */
+	/*   - Ensure _pollTable contains listening socket.                           */
 	/*   - poll() should not block indefinitely.                                 */
 	/*****************************************************************************/
 
-	if (_poll_fds.empty())
+	if (_pollTable.empty())
 		return ;
 
 	int timeout_ms = 1000; // wait 1000ms = 1s.
-	int ready = poll(&_poll_fds[0], _poll_fds.size(), timeout_ms);
+	int ready = poll(&_pollTable[0], _pollTable.size(), timeout_ms);
 
 	if (ready == -1)
 	{
@@ -69,10 +84,10 @@ void Server::handlePollEvents()
 		return ;
 
 	
-	for (size_t i = 0; i < _poll_fds.size(); i++)
+	for (size_t i = 0; i < _pollTable.size(); i++)
 	{
-		int fd = _poll_fds[i].fd;
-		int result_event = _poll_fds[i].revents;
+		int fd = _pollTable[i].fd;
+		int result_event = _pollTable[i].revents;
 		
 		if (result_event == 0) // no events.
 			continue ;

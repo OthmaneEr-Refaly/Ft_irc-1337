@@ -12,9 +12,15 @@
 class Client;
 class Channel;
 
+struct Command 
+{
+	std::string 				prefix;
+	std::string					command;
+	std::vector<std::string>	params;
+};
+
 class Server 
 {
-
 	private:
 	// ===== Configuration =====
 		int				_port;
@@ -22,7 +28,7 @@ class Server
 
 	// ===== Networking state =====
 		int							_listen_fd; // Listening socket fd
-		std::vector<struct pollfd>	_poll_fds;  // Poll list
+		std::vector<struct pollfd>	_pollTable;  // Poll list
 		bool						_running;   // Main loop flag
 
 	// ===== Data structures =====
@@ -67,15 +73,18 @@ class Server
 	// ===== Main control =====
 		void run();  // Start the server loop
 		void stop(); // Stop the server gracefully
-	//===== [OR] parsing functions ====
-		struct Command {
-    	std::string prefix;
-    	std::string command;
-    	std::vector<std::string> params;
-
-		};
-
+		
+	// ===== [OR] parsing functions ====
 		Command parseRawLine(const std::string &line);
+
+	// ===== [MB] empty title ======
+		void	disconnectClient(int fd, const std::string &reason);
+		void	tryRegister(Client &client);
+
+	// ===== [MB] _nick_to_client map helper functions =====
+		void	registerNickname(const std::string &nick, Client *client);
+		void	unregisterNickname(const std::string &nick);
+		bool	isNicknameInUse(const std::string &nick) const;
 };
 
 #endif

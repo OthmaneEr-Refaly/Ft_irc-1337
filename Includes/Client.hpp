@@ -13,9 +13,11 @@ class Client
 		std::string	_inbuf;			// Data received but not yet processed
 		std::string _outbuf;		// Data to send when socket is writable
 		bool		_want_write;	// True if poll() should watch for POLLOUT
+		bool		_closing;// True if the connection should be closed
 
 	// ===== Identity =====
 		bool		_registered; 	// True if PASS, NICK, USER completed
+		bool		_passOk;		// True if PASS is set correctly
 		std::string	_nick; 			// NICK command value
 		std::string	_user; 			// USER command value
 		std::string	_realname; 		// USER command value real name field
@@ -39,6 +41,8 @@ class Client
 		const std::string&				getOutbuf() const;
 		bool							getWantsWrite() const;
 		bool 							isRegistered() const;
+		bool 							isClosing() const;
+		bool 							isPassOk() const;
 		const std::string&				getNick() const;
 		const std::string&				getUser() const;
 		const std::string&				getRealname() const;
@@ -51,6 +55,7 @@ class Client
 		void setOutbuf(const std::string& buf);
 		void setWantsWrite(bool value);
 		void setRegistered(bool value);
+		void setPassOk(bool value);
 		void setNick(const std::string& nick);
 		void setUser(const std::string& user);
 		void setRealname(const std::string& realname);
@@ -68,9 +73,11 @@ class Client
 	
 	// ===== Connection control =====
 		void markForClose();	// Prepare client for removal
+	
+	
 	// ===== Messaging =====
 	void sendMessage(const std::string& message);
-	
+	void sendNumericReply(int code, const std::string &arg, const std::string &message);
 };
 
 #endif
