@@ -85,6 +85,11 @@ class Server
 		void	registerNickname(const std::string &nick, Client *client);
 		void	unregisterNickname(const std::string &nick);
 		bool	isNicknameInUse(const std::string &nick) const;
+
+
+
+		Channel* getChannel(const std::string& channelName);
+		Channel* createChannel(const std::string& channelName);
 };
 
 #endif

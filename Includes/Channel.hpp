@@ -3,6 +3,8 @@
 
 #include <string>
 #include <set>
+#include "Client.hpp"
+#include "Server.hpp"
 
 class Client;
 
@@ -66,13 +68,16 @@ class Channel
 		bool isInvited(const std::string& nick) const;
 
 	// ===== JOIN/LEAVE Helpers =====
-		void handleJoin(Client* c, const std::string& key); // Add to members/operators/invites
+		void executeJoin(Client* c, const std::string& key); // Add to members/operators/invites
 		bool canJoin(Client* c, const std::string& key) const; // Check invite/key/limit
 		void handleLeave(Client* c); // Remove from members/operators/invites
 		void notifyMembers(const std::string& message);
-		void handlePart(Client* c);
-		void handleTopic(Client* c ,const std::string& topic);
-		void handleMode(Client* c, const std::string& mode, const std::string& params);
+
+
+
+		void executePart(Client* c);
+		void executeTopic(Client* c, const std::string& topic);
+		void executeMode(Client* c, const std::string& mode, const std::string& param);
 
 };
 

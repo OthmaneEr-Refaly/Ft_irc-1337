@@ -141,3 +141,6 @@ void Client::sendMessage(const std::string& message)
 	enqueueOutput(message + "\r\n");
 	_want_write = true; // Ensure we want to write when there's data to send
 }
+
+
+

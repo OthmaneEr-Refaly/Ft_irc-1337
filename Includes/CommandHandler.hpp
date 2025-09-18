@@ -26,6 +26,9 @@ void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 	void	handlePass(Server &server, Client &client, const Command &cmd);
 	void	handleNick(Server &server, Client &client, const Command &cmd);
 	void	handleUser(Server &server, Client &client, const Command &cmd);
-	
+	void 	handleJoin(Server &server, Client &client, const Command &cmd);
+	void 	handlePart(Server &server, Client &client, const Command &cmd);
+	void 	handleMode(Server &server, Client &client, const Command &cmd);
+	void 	handleTopic(Server &server, Client &client, const Command &cmd);
 
 #endif

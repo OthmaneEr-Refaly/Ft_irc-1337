@@ -24,6 +24,10 @@ void	initCommandMap()
 	commandMap["PASS"] = handlePass;
 	commandMap["NICK"] = handleNick;
 	commandMap["USER"] = handleUser;
+	commandMap["JOIN"] = handleJoin;
+	commandMap["PART"] = handlePart;
+	commandMap["MODE"] = handleMode;
+	commandMap["TOPIC"] = handleTopic;
 }
 
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)
@@ -40,3 +44,4 @@ void	dispatchCommand(Server &server, Client &client, const Command &cmd)
 		client.sendNumericReply(ERR_UNKNOWNCOMMAND, cmd.command, "Unknown command");
 	}
 }
+
