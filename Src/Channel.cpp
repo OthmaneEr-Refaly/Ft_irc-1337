@@ -2,7 +2,7 @@
 #include "../Includes/Client.hpp"
 #include "../Includes/CommandHandler.hpp"
 #include "../Includes/NumericReplies.hpp"
-
+#include <stdlib.h>
 
 // ======= Canonical form =======
     Channel::Channel() 
@@ -166,8 +166,10 @@
         return true;
     }
 
-    void Channel::notifyMembers(const std::string& message) {
-        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
+    void Channel::notifyMembers(const std::string& message)
+	{
+        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
+		{
             (*it)->sendMessage(message);
         }
     }

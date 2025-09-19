@@ -94,7 +94,8 @@ SRCS        = Src/main.cpp \
               Src/Server/ServerInit.cpp \
 			  Src/Commands/CommandHandler.cpp \
 			  Src/Commands/Registration.cpp \
-			  Src/Commands/Privmsg.cpp
+			  Src/Commands/Privmsg.cpp \
+			  Src/Commands/Kick_invite.cpp
 
 OBJS        = $(SRCS:.cpp=.o)
 TOTAL_FILES = $(words $(SRCS))

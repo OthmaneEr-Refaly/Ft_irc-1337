@@ -122,6 +122,19 @@
 		return (_nick_to_client.count(nick) > 0);
 	}
 
+	Client*	Server::findClientByNick(const std::string &nick)
+	{
+		for (std::map<std::string, Client*>::iterator it = _nick_to_client.begin(); it != _nick_to_client.end(); ++it)
+		{
+			if (it->second->getNick() == nick)
+			{
+				return (it->second);
+			}
+		}
+		return (NULL);
+	}
+
+
 // ===== [MB] PRIVMSG helper functions =====
 	void	Server::sendMsgToClient(Client *client, const std::string &msg)
 	{
@@ -129,7 +142,8 @@
 		enableWriteInterest(client->getFd());
 	}
 
-	Channel* Server::getChannel(const std::string& channelName) {
+	Channel* Server::getChannel(const std::string& channelName) 
+	{
 	    std::cout << "Looking for channel: " << channelName << std::endl;
 	    std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
 	    if (it != _channels.end()) {
@@ -140,10 +154,22 @@
 	    return NULL;
 	}
 
-	Channel* Server::createChannel(const std::string& channelName) {
+	Channel* Server::createChannel(const std::string& channelName)
+	{
 	    std::cout << "debug Creating new channel: " << channelName << std::endl;
 	    Channel* newChannel = new Channel(channelName);
 	    _channels[channelName] = newChannel;
 	    std::cout << "debab Channel created and added to map: " << channelName << std::endl;
 	    return newChannel;
+	}
+
+	void Server::removeChannel(const std::string& channelName)
+	{
+		std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
+		if (it != _channels.end())
+		{
+			delete it->second;
+			_channels.erase(it);
+			std::cout << "[debug] channel removed : " << channelName << std::endl;
+		}
 	}

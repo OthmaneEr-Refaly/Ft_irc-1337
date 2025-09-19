@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 12:04:10 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 09:20:30 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/19 19:09:23 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 // ---- Channel Replies ----
 #define RPL_NOTOPIC           331   // "<channel> :No topic is set"
 #define RPL_TOPIC             332   // "<channel> :<topic>"
+#define RPL_INVITING          341   // ""
 #define RPL_NAMREPLY          353   // "= <channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
 #define RPL_ENDOFNAMES        366   // "<channel> :End of NAMES list"
 

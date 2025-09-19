@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 09:40:31 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/19 18:25:47 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,16 @@ static std::map<std::string, CommandFunction> commandMap; // need to undestand d
 
 void	initCommandMap()
 {
-	commandMap["PASS"] = handlePass;
-	commandMap["NICK"] = handleNick;
-	commandMap["USER"] = handleUser;
-	commandMap["PRIVMSG"] = handlePrivmsg; 
-	commandMap["JOIN"] = handleJoin;
-	commandMap["PART"] = handlePart;
-	commandMap["MODE"] = handleMode;
-	commandMap["TOPIC"] = handleTopic;
+	commandMap["PASS"]    = handlePass;
+	commandMap["NICK"]    = handleNick;
+	commandMap["USER"]    = handleUser;
+	commandMap["PRIVMSG"] = handlePrivmsg;
+	commandMap["KICK"]    = handleKick;
+	commandMap["INVITE"]  = handleInvite;
+	commandMap["JOIN"]    = handleJoin;
+	commandMap["PART"]    = handlePart;
+	commandMap["MODE"]    = handleMode;
+	commandMap["TOPIC"]   = handleTopic;
 }
 
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)
