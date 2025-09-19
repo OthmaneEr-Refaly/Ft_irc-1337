@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 11:30:19 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 09:19:34 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/19 09:41:14 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 	void	handlePass(Server &server, Client &client, const Command &cmd);
 	void	handleNick(Server &server, Client &client, const Command &cmd);
 	void	handleUser(Server &server, Client &client, const Command &cmd);
+	void 	handleJoin(Server &server, Client &client, const Command &cmd);
+	void 	handlePart(Server &server, Client &client, const Command &cmd);
+	void 	handleMode(Server &server, Client &client, const Command &cmd);
+	void 	handleTopic(Server &server, Client &client, const Command &cmd);
 	void	handlePrivmsg(Server &server, Client &client, const Command &cmd);
 
 // helper functions:

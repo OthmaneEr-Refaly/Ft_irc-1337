@@ -128,3 +128,22 @@
 		client->enqueueOutput(msg);
 		enableWriteInterest(client->getFd());
 	}
+
+	Channel* Server::getChannel(const std::string& channelName) {
+	    std::cout << "Looking for channel: " << channelName << std::endl;
+	    std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
+	    if (it != _channels.end()) {
+	        std::cout << "Channel found: " << channelName << std::endl;
+	        return it->second;
+	    }
+	    std::cout << "Channel not found: " << channelName << std::endl;
+	    return NULL;
+	}
+
+	Channel* Server::createChannel(const std::string& channelName) {
+	    std::cout << "debug Creating new channel: " << channelName << std::endl;
+	    Channel* newChannel = new Channel(channelName);
+	    _channels[channelName] = newChannel;
+	    std::cout << "debab Channel created and added to map: " << channelName << std::endl;
+	    return newChannel;
+	}

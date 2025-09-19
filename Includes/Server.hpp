@@ -86,6 +86,11 @@ class Server
 		void	unregisterNickname(const std::string &nick);
 		bool	isNicknameInUse(const std::string &nick) const;
 
+
+
+		Channel* getChannel(const std::string& channelName);
+		Channel* createChannel(const std::string& channelName);
+
 	// ===== [MB] PRIVMSG helper functions =====
 		void	sendMsgToClient(Client *client, const std::string &msg);
 };
