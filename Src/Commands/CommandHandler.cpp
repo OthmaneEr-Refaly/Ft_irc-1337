@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/16 09:09:48 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/19 09:21:51 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	initCommandMap()
 	commandMap["PASS"] = handlePass;
 	commandMap["NICK"] = handleNick;
 	commandMap["USER"] = handleUser;
+	commandMap["PRIVMSG"] = handlePrivmsg; 
 }
 
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)

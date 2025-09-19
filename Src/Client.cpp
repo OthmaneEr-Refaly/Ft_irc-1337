@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 11:41:48 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/15 17:35:58 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/19 09:23:53 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,3 +135,9 @@
 		
 		write(_fd, reply.c_str(), reply.size());
 	}
+
+void Client::sendMessage(const std::string& message)
+{
+	enqueueOutput(message + "\r\n");
+	_want_write = true; // Ensure we want to write when there's data to send
+}

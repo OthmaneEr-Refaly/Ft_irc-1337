@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 12:04:10 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/17 14:06:29 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/19 09:20:30 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,7 @@
 #define ERR_CHANOPRIVSNEEDED  482   // "<channel> :You're not channel operator"
 #define ERR_UMODEUNKNOWNFLAG  501   // ":Unknown MODE flag"
 #define ERR_USERSDONTMATCH    502   // ":Cannot change mode for other users"
+#define ERR_NORECIPIENT 	  411   // ":No recipient given (PRIVMSG)"
+#define	ERR_NOTEXTTOSEND	  412   // ":No text to send"
 
 #endif 

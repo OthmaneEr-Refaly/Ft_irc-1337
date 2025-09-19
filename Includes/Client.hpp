@@ -76,7 +76,7 @@ class Client
 	
 	
 	// =====[OR] parsing functions =====
-
+	void sendMessage(const std::string& message);
 	void sendNumericReply(int code, const std::string &arg, const std::string &message);
 };
 

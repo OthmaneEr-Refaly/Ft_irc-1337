@@ -38,7 +38,7 @@
 			_port          = other._port;
 			_password      = other._password;
 			_listen_fd     = other._listen_fd;
-			_pollTable      = other._pollTable;
+			_pollTable     = other._pollTable;
 			_running       = other._running;
 			_fd_to_client  = other._fd_to_client;
 			_nick_to_client= other._nick_to_client;
@@ -120,4 +120,11 @@
 	bool	Server::isNicknameInUse(const std::string &nick) const
 	{
 		return (_nick_to_client.count(nick) > 0);
+	}
+
+// ===== [MB] PRIVMSG helper functions =====
+	void	Server::sendMsgToClient(Client *client, const std::string &msg)
+	{
+		client->enqueueOutput(msg);
+		enableWriteInterest(client->getFd());
 	}
