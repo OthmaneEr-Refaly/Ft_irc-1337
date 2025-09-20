@@ -86,15 +86,16 @@ void Server::handleClientRead(int fd)
 
 	if (bytes_read <= 0)
 	{
+		Command quitCmd;
+		quitCmd.command = "QUIT";
+
 		if (bytes_read == 0) // Client disconnected (0)
-			std::cout << "Client " << fd << " disconnected" << std::endl;
-		else if (bytes_read == -1)
-		{
-			std::cerr << "recv() error on fd " << fd << ": " 
-			<< strerror(errno) << std::endl;
-		}
-		// Handle recv() errors properly (check) before removing a client.
-		removeClient(fd);
+			quitCmd.params.push_back("Client disconnected");
+		
+		else
+			quitCmd.params.push_back("Connection error");
+
+		handleQuit(*this, client, quitCmd);
 		return;
 	}
 

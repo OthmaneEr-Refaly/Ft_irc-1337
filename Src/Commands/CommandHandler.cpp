@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 18:25:47 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/20 16:48:41 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	initCommandMap()
 	commandMap["PART"]    = handlePart;
 	commandMap["MODE"]    = handleMode;
 	commandMap["TOPIC"]   = handleTopic;
+	commandMap["QUIT"]    = handleQuit;
+	commandMap["NOTICE"]  = handleNotice;
 }
 
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)

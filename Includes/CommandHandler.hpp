@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 11:30:19 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 18:25:20 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/20 16:49:04 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 	void	handlePrivmsg(Server &server, Client &client, const Command &cmd);
 	void	handleKick(Server &server, Client &client, const Command &cmd);
 	void	handleInvite(Server &server, Client &client, const Command &cmd);
+	void	handleQuit(Server &server, Client &client, const Command &cmd);
+	void	handleNotice(Server &server, Client &client, const Command &cmd);
 	
 // helper functions:
 	std::string normalizeNick(const std::string &newNick);
