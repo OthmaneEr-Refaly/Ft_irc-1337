@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 15:44:25 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 19:10:11 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/20 11:32:07 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ std::string inviteMsgFormat(const Client& op, const std::string &channelName,
 {
 	std::string msg = ":" + op.getNick() + "!"
 					+ op.getUser() + "@" + op.getHost()
-					+ "INVITE" + channelName + " "
+					+ " INVITE " + channelName + " "
 					+ targetNick +"\r\n";
 	return (msg); 	
 }
@@ -32,7 +32,7 @@ std::string kickMsgFormat(const Client& op, const std::string &channelName,
 {
 	std::string msg = ":" + op.getNick() + "!"
 					+ op.getUser() + "@" + op.getHost()
-					+ "KICK" + channelName + " "
+					+ " KICK " + channelName + " "
 					+ targetNick + " :" + reason
 					+"\r\n";
 	return (msg); 	
@@ -54,7 +54,7 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	Channel *channel = server.getChannel(channelName);
 	if (!channel)
 	{
-		client.sendNumericReply(ERR_NOSUCHCHANNEL, "KICK", "No such channel");
+		client.sendNumericReply(ERR_NOSUCHCHANNEL, channelName, "No such channel");
 		return ;
 	}
 	if (!channel->isOperator(&client))
@@ -66,7 +66,7 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
 	if (!targetClient)
 	{
-		client.sendNumericReply(ERR_NOSUCHNICK, "KICK", "No such nick");
+		client.sendNumericReply(ERR_NOSUCHNICK, targetNick, "No such nick");
 		return ;
 	}
 	if (!channel->isMember(targetClient))
@@ -77,7 +77,7 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	
 	channel->removeMember(targetClient);
 	channel->removeInvite(targetNick);
-	client.removeChannel(channelName);
+	targetClient->removeChannel(channelName);
 	if (channel->isOperator(targetClient))
 		channel->removeOperator(targetClient);
 
@@ -87,7 +87,6 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	if (channel->getMembers().empty())
 	{
 		server.removeChannel(channelName);
-		//removed channel msg maybe ??
 		return ;
 	}
 	else
@@ -108,8 +107,8 @@ void	handleInvite(Server &server, Client &client, const Command &cmd)
 		return ;
 	}
 	
-	std::string channelName = cmd.params[0];
-	std::string targetNick  = cmd.params[1];
+	std::string targetNick  = cmd.params[0];
+	std::string channelName = cmd.params[1];
 
 	Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
 	if (!targetClient)
@@ -146,5 +145,5 @@ void	handleInvite(Server &server, Client &client, const Command &cmd)
 	channel->addInvite(targetNick);
 	std::string formattedMsg = inviteMsgFormat(client, channelName, targetNick);
 	server.sendMsgToClient(targetClient, formattedMsg);
-	client.sendNumericReply(RPL_INVITING, targetNick + " " + channelName, "");
+	client.sendNumericReply(RPL_INVITING, channelName + " " + targetNick, "");
 }
