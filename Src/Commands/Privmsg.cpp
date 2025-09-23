@@ -6,33 +6,11 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:21:56 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 10:25:31 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/23 15:57:29 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-	PRIVMSG Command Handler
-	-----------------------
-	- Implements sending messages between users and to channels.
-	- RFC Rules:
-		• A message must always have a recipient and text.
-		• Targets can be nicknames, channels, or a comma-separated list of both.
-		• Messages longer than 512 bytes (including CRLF) must be truncated.
-		• When sending to a channel, the message is broadcast to all members 
-		  except the sender.
-		• If a target nick/channel does not exist → ERR_NOSUCHNICK or ERR_NOSUCHCHANNEL.
-		• If the sender is not on the channel → ERR_NOTONCHANNEL.
-	- Helpers:
-		• privmsgFormat() → Formats messages as ":nick!user@host PRIVMSG target :message".
-		• Server::sendMsgToClient() → Handles safe delivery to a single client.
-*/
-
-#include "../../Includes/Server.hpp"
-#include "../../Includes/Client.hpp"
-#include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
-#include "../../Includes/CommandHandler.hpp"
-#include "../../Includes/NumericReplies.hpp"
 
 std::string privmsgFormat(Client &client, const std::string &target, const std::string &msg)
 {

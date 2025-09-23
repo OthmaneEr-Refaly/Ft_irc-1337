@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 15:43:22 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/15 20:51:43 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/23 16:33:09 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void Server::initListenSocket()
         _running = false;
     }
 
-
     // initializing sockaddr_in structure :
     my_addr.sin_family = AF_INET;
     std::cout << "Debugging | sin_famly is =  " << my_addr.sin_family << std::endl;
@@ -51,12 +50,10 @@ void Server::initListenSocket()
     my_addr.sin_zero[0] = '\0';
     std::cout << "Debugging | sin_zero is = " << my_addr.sin_zero[0] << std::endl;
 
-
     // fcntl and setsockopt :
     fcntl(socket_fd, F_SETFL, O_NONBLOCK);
     setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (&option_value),
         sizeof(option_value));
-
 
     //	bind and listen :
     _listen_fd = socket_fd;

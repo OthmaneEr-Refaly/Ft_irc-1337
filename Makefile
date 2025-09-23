@@ -1,36 +1,3 @@
-# NAME = ft_irc
-
-# CXX = c++
-# CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-
-# SRCS = Src/main.cpp \
-		# Src/Client.cpp \
-		# Src/Channel.cpp \
-		# Src/Server/Server.cpp \
-		# Src/Server/ServerCore.cpp \
-		# Src/Server/ServerPoll.cpp \
-		# Src/Server/ServerIO.cpp\
-		# Src/Server/ServerInit.cpp
-
-
-# OBJS = $(SRCS:.cpp=.o)
-
-# all: credit $(NAME)
-
-# $(NAME): $(OBJS)
-	# $(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
-
-# clean:
-	# rm -f $(OBJS)
-
-# fclean: clean
-	# rm -f $(NAME)
-
-# re: fclean all
-
-# .PHONY: all clean fclean re
-# .SECONDARY: $(OBJS)
-
 # #Print Credit
 # credit:
 	# @echo " ┏━━━┓┏━━━━┓    ┏━━┓┏━━━┓┏━━━┓"
@@ -85,18 +52,30 @@ BG_WHITE    = \033[47m
 
 # Source Files
 SRCS        = Src/main.cpp \
-              Src/Client.cpp \
-              Src/Channel.cpp \
+              Src/Client/Client.cpp \
+              Src/Client/ClientHelpers.cpp \
+              Src/Channel/Channel.cpp \
+              Src/Channel/ChannelHelpers.cpp \
               Src/Server/Server.cpp \
+			  Src/Server/ServerHelpers.cpp \
               Src/Server/ServerCore.cpp \
               Src/Server/ServerPoll.cpp \
               Src/Server/ServerIO.cpp \
               Src/Server/ServerInit.cpp \
 			  Src/Commands/CommandHandler.cpp \
-			  Src/Commands/Registration.cpp \
+			  Src/Commands/CommandHelpers.cpp \
+			  Src/Commands/Pass.cpp \
+			  Src/Commands/Nick.cpp \
+			  Src/Commands/User.cpp \
 			  Src/Commands/Privmsg.cpp \
-			  Src/Commands/Kick_invite.cpp \
-			  Src/Commands/Quit_notice.cpp
+			  Src/Commands/Notice.cpp \
+			  Src/Commands/Invite.cpp \
+			  Src/Commands/Kick.cpp \
+			  Src/Commands/Mode.cpp \
+			  Src/Commands/Join.cpp \
+			  Src/Commands/Part.cpp \
+			  Src/Commands/Topic.cpp \
+			  Src/Commands/Quit.cpp
 
 OBJS        = $(SRCS:.cpp=.o)
 TOTAL_FILES = $(words $(SRCS))

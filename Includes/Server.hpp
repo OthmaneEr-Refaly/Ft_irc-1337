@@ -4,10 +4,6 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <poll.h> // for pollfd struct
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <iostream>
 
 class Client;
 class Channel;
@@ -68,30 +64,31 @@ class Server
 		const std::map<std::string, Channel*>&	getChannels() const;
 
 	// ===== Setters =====
-		void setRunning(bool value);
+		void 		setRunning(bool value);
 
 	// ===== Main control =====
-		void run();  // Start the server loop
-		void stop(); // Stop the server gracefully
+		void 		run();  // Start the server loop
+		void 		stop(); // Stop the server gracefully
 		
-	// ===== [OR] parsing functions ====
-		Command parseRawLine(const std::string &line);
+	// ===== Parsing functions ====
+		Command 	parseRawLine(const std::string &line);
 
-	// ===== [MB] empty title ======
-		void	disconnectClient(int fd, const std::string &reason);
-		void	tryRegister(Client &client);
+	// ===== Client management =====
+		void		disconnectClient(int fd, const std::string &reason);
+		void		tryRegister(Client &client);
 
-	// ===== [MB] _nick_to_client map helper functions =====
-		void	registerNickname(const std::string &nick, Client *client);
-		void	unregisterNickname(const std::string &nick);
-		bool	isNicknameInUse(const std::string &nick) const;
-		Client	*findClientByNick(const std::string &nick);
-
+	// ===== Nickname management =====
+		void		registerNickname(const std::string &nick, Client *client);
+		void		unregisterNickname(const std::string &nick);
+		bool		isNicknameInUse(const std::string &nick) const;
+		Client		*findClientByNick(const std::string &nick);
+	
+	// ===== Channel management =====
 		Channel*	getChannel(const std::string& channelName);
 		Channel*	createChannel(const std::string& channelName);
 		void		removeChannel(const std::string& channelName);
 
-	// ===== [MB] PRIVMSG helper functions =====
+	// ===== Messaging functions =====
 		void		sendMsgToClient(Client *client, const std::string &msg);
 		std::string	enforceMessageLength(const std::string &rawMessage);
 };

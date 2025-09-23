@@ -74,10 +74,9 @@ class Client
 	// ===== Connection control =====
 		void markForClose();	// Prepare client for removal
 	
-	
 	// ===== Messaging =====
-	void sendMessage(const std::string& message);
-	void sendNumericReply(int code, const std::string &arg, const std::string &message);
+		void sendMessage(const std::string& message);
+		void sendNumericReply(int code, const std::string &arg, const std::string &message);
 };
 
 #endif

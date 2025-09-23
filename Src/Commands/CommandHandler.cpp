@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/20 18:33:42 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/23 15:52:49 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,29 +40,10 @@ void	initCommandMap()
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)
 {
 	std::map<std::string, CommandFunction>::iterator it = commandMap.find(cmd.command);
-	std::cout << "SEARCHING THE COMMANDS =============" << std::endl;
-	
+
 	if (it != commandMap.end())
-	{
 		it->second(server, client, cmd);
-	}
 	else
-	{
 		client.sendNumericReply(ERR_UNKNOWNCOMMAND, cmd.command, "Unknown command");
-	}
 }
 
-// ==== Helper function ====
-std::vector<std::string> splitTargets(const std::string targets)
-{
-	std::vector<std::string> result;
-	std::stringstream sstream(targets);
-	std::string item;
-
-	while (std::getline(sstream, item, ','))
-	{
-		if (!item.empty())
-			result.push_back(item);
-	}
-	return result;
-}

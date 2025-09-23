@@ -1,21 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   NumericReplies.hpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/14 12:04:10 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 10:22:24 by mobouifr         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef NUMERICREPLIES_HPP
 #define NUMERICREPLIES_HPP
-
-// =======================
-//  Reply Codes (2xx, 3xx, 4xx, 5xx)
-// =======================
 
 // ---- Registration Replies ----
 #define RPL_WELCOME           001   // ":Welcome to the Internet Relay Network <nick>!<user>@<host>"
