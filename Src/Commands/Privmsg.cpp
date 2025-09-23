@@ -6,25 +6,25 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:21:56 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 14:37:29 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/23 10:25:31 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-    PRIVMSG Command Handler
-    -----------------------
-    - Implements sending messages between users and to channels.
-    - RFC Rules:
-        • A message must always have a recipient and text.
-        • Targets can be nicknames, channels, or a comma-separated list of both.
-        • Messages longer than 512 bytes (including CRLF) must be truncated.
-        • When sending to a channel, the message is broadcast to all members 
-          except the sender.
-        • If a target nick/channel does not exist → ERR_NOSUCHNICK or ERR_NOSUCHCHANNEL.
-        • If the sender is not on the channel → ERR_NOTONCHANNEL.
-    - Helpers:
-        • privmsgFormat() → Formats messages as ":nick!user@host PRIVMSG target :message".
-        • Server::sendMsgToClient() → Handles safe delivery to a single client.
+	PRIVMSG Command Handler
+	-----------------------
+	- Implements sending messages between users and to channels.
+	- RFC Rules:
+		• A message must always have a recipient and text.
+		• Targets can be nicknames, channels, or a comma-separated list of both.
+		• Messages longer than 512 bytes (including CRLF) must be truncated.
+		• When sending to a channel, the message is broadcast to all members 
+		  except the sender.
+		• If a target nick/channel does not exist → ERR_NOSUCHNICK or ERR_NOSUCHCHANNEL.
+		• If the sender is not on the channel → ERR_NOTONCHANNEL.
+	- Helpers:
+		• privmsgFormat() → Formats messages as ":nick!user@host PRIVMSG target :message".
+		• Server::sendMsgToClient() → Handles safe delivery to a single client.
 */
 
 #include "../../Includes/Server.hpp"
@@ -36,9 +36,10 @@
 
 std::string privmsgFormat(Client &client, const std::string &target, const std::string &msg)
 {
-    std::string fullMsg = ":" + client.getNick() + "!" 
+	std::string fullMsg = ":" + client.getNick() + "!" 
 						+ client.getUser() + "@" + client.getHost()
 						+ " PRIVMSG " + target + " :" + msg + "\r\n";
+
 	return (fullMsg);
 }
 
@@ -56,48 +57,51 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 		return ;
 	}
 
-	std::string target = cmd.params[0];
+	const std::vector<std::string> targets = splitTargets(cmd.params[0]);
 	std::string msg = cmd.params[1];
-	std::string formattedMsg = privmsgFormat(client, target, msg);
-	
-	if (target[0] == '#')
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
-		Channel *chan = server.getChannel(target);
-		if (!chan)
+		const std::string &target = targets[i];
+		std::string formattedMsg = privmsgFormat(client, target, msg);
+		if (target[0] == '#')
 		{
-			client.sendNumericReply(ERR_NOSUCHCHANNEL, target, "No Such channel");
-			return ;
-		}
-
-		if (!chan->isMember(&client))
-		{
-			client.sendNumericReply(ERR_NOTONCHANNEL, target, "You're not on that channel");
-			return ;
-		}
-
-		const std::set<Client*> &members = chan->getMembers();
-		for (std::set<Client*>::iterator it = members.begin(); it != members.end(); ++it)
-		{
-			if (*it != &client) // this condition is to not send the msg to the sender
+			Channel *chan = server.getChannel(target);
+			if (!chan)
 			{
-				server.sendMsgToClient(*it, formattedMsg);
+				client.sendNumericReply(ERR_NOSUCHCHANNEL, target, "No Such channel");
+				continue ;
+			}
+
+			if (!chan->isMember(&client))
+			{
+				client.sendNumericReply(ERR_NOTONCHANNEL, target, "You're not on that channel");
+				continue ;
+			}
+
+			const std::set<Client*> &members = chan->getMembers();
+			for (std::set<Client*>::iterator it = members.begin(); it != members.end(); ++it)
+			{
+				if (*it != &client) // this condition is to not send the msg to the sender
+				{
+					server.sendMsgToClient(*it, formattedMsg);
+				}
 			}
 		}
-	}
 
-	else
-	{
-		std::string normNick = normalizeNick(target);
-		if (!server.isNicknameInUse(normNick))
+		else
 		{
-			client.sendNumericReply(ERR_NOSUCHNICK, target, "No such nick/channel");
-			return ;
-		}
-		std::map<std::string, Client*>::const_iterator it = server.getNickToClient().find(normNick);
-		if (it != server.getNickToClient().end())
-		{
-			Client *targetClient = it->second;
-			server.sendMsgToClient(targetClient, formattedMsg);
+			std::string normNick = normalizeNick(target);
+			if (!server.isNicknameInUse(normNick))
+			{
+				client.sendNumericReply(ERR_NOSUCHNICK, target, "No such nick/channel");
+				continue ;
+			}
+			std::map<std::string, Client*>::const_iterator it = server.getNickToClient().find(normNick);
+			if (it != server.getNickToClient().end())
+			{
+				Client *targetClient = it->second;
+				server.sendMsgToClient(targetClient, formattedMsg);
+			}
 		}
 	}
 }

@@ -1,6 +1,9 @@
 #ifndef HEADERS_HPP
 #define HEADERS_HPP
 
+#define IRC_MAX_LINE 512
+#define IRC_MAX_CONTENT (IRC_MAX_LINE - 2)
+
 // ===== C++ standard headers =====
 #include <iostream>      // std::cout, std::cerr
 #include <string>        // std::string

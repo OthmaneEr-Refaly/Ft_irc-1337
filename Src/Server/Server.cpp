@@ -138,8 +138,34 @@
 // ===== [MB] PRIVMSG helper functions =====
 	void	Server::sendMsgToClient(Client *client, const std::string &msg)
 	{
-		client->enqueueOutput(msg);
+		std::string safeMsg = enforceMessageLength(msg);
+		client->enqueueOutput(safeMsg);
 		enableWriteInterest(client->getFd());
+	}
+
+	std::string Server::enforceMessageLength(const std::string &rawMessage)
+	{
+		if (rawMessage.size() <= IRC_MAX_LINE)
+			return (rawMessage);
+
+		size_t payloadStart = rawMessage.find(" :");
+		if (payloadStart != std::string::npos)
+		{
+			std::string headerPart = rawMessage.substr(0, payloadStart + 2); // +2 for the " :"
+			std::string payloadPart = rawMessage.substr(payloadStart + 2);
+
+			size_t headerPartSize = headerPart.size() + 2; // +2 this time is for the upcoming \r\n
+			if (headerPartSize >=IRC_MAX_LINE)
+				return (rawMessage.substr(0, IRC_MAX_CONTENT) + "\r\n");
+			
+			size_t maxPayloadLength = IRC_MAX_LINE - headerPartSize;
+			if (payloadPart.size() > maxPayloadLength)
+				payloadPart = payloadPart.substr(0, maxPayloadLength);
+				
+			return (headerPart + payloadPart + "\r\n");
+		}
+
+		return (rawMessage.substr(0, IRC_MAX_CONTENT) + "\r\n");
 	}
 
 	Channel* Server::getChannel(const std::string& channelName) 

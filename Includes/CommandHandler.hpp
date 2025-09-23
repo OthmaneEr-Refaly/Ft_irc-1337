@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 11:30:19 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/20 16:49:04 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/20 18:34:03 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 	void	handleNotice(Server &server, Client &client, const Command &cmd);
 	
 // helper functions:
-	std::string normalizeNick(const std::string &newNick);
+	std::string 				normalizeNick(const std::string &newNick);
+	std::vector<std::string>	splitTargets(const std::string targets);
 
 #endif

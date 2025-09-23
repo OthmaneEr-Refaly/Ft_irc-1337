@@ -16,6 +16,7 @@
 #include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
 #include "../../Includes/CommandHandler.hpp"
+#include "../../Includes/NumericReplies.hpp"
 
 #include <cctype>
 #include <cstddef>
@@ -28,11 +29,11 @@ void Server::acceptNewClient()
 	/* How it works:                                                             */
 	/*   1. Accept a new client connection from the listening socket.            */
 	/*   2. Set the new socket to non-blocking mode.                             */
-	/*   3. Add a pollfd entry to _pollTable.                                     */
+	/*   3. Add a pollfd entry to _pollTable.                                    */
 	/*   4. Create a new Client object and store it in _fd_to_client.            */
 	/* Key points:                                                               */
 	/*   - Log new connections for debugging.                                    */
-	/*   - New client should appear in both _fd_to_client and _pollTable.         */
+	/*   - New client should appear in both _fd_to_client and _pollTable.        */
 	/*****************************************************************************/
 
 	struct sockaddr_in client_addr;
@@ -108,9 +109,16 @@ void Server::handleClientRead(int fd)
 	std::cout << lines.size() << std::endl;
 	for (size_t i = 0; i < lines.size(); i++)
 	{
-		std::cout << "Parsed command from fd " << fd << ": [" << lines[i] << "]" << std::endl;
-		Command cmd = parseRawLine(lines[i]);
+		std::string line = lines[i];
 
+		if (line.size() > IRC_MAX_CONTENT)
+		{
+			line = line.substr(0, IRC_MAX_CONTENT);
+			client.sendNumericReply(ERR_INPUTTOOLONG, "*", "Input line too long, truncated");
+		}
+
+		std::cout << "Parsed command from fd " << fd << ": [" << line << "]" << std::endl;
+		Command cmd = parseRawLine(line);
 		dispatchCommand(*this, client, cmd);
 	}
 

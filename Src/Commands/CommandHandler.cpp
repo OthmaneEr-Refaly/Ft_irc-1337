@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/20 16:48:41 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/20 18:33:42 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "../../Includes/Headers.hpp"
 #include "../../Includes/CommandHandler.hpp"
 #include "../../Includes/NumericReplies.hpp"
+#include <sstream>
+
 
 static std::map<std::string, CommandFunction> commandMap; // need to undestand deeply how this map static declaration will work, and why using it as a static.
 
@@ -50,3 +52,17 @@ void	dispatchCommand(Server &server, Client &client, const Command &cmd)
 	}
 }
 
+// ==== Helper function ====
+std::vector<std::string> splitTargets(const std::string targets)
+{
+	std::vector<std::string> result;
+	std::stringstream sstream(targets);
+	std::string item;
+
+	while (std::getline(sstream, item, ','))
+	{
+		if (!item.empty())
+			result.push_back(item);
+	}
+	return result;
+}

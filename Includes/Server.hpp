@@ -92,8 +92,8 @@ class Server
 		void		removeChannel(const std::string& channelName);
 
 	// ===== [MB] PRIVMSG helper functions =====
-		void	sendMsgToClient(Client *client, const std::string &msg);
-
+		void		sendMsgToClient(Client *client, const std::string &msg);
+		std::string	enforceMessageLength(const std::string &rawMessage);
 };
 
 #endif

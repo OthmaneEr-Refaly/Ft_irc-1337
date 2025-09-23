@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 12:04:10 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/19 19:09:23 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/23 10:22:24 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@
 #define ERR_NOSUCHNICK        401   // "<nickname> :No such nick/channel"
 #define ERR_NOSUCHCHANNEL     403   // "<channel name> :No such channel"
 #define ERR_CANNOTSENDTOCHAN  404   // "<channel name> :Cannot send to channel"
+#define ERR_NORECIPIENT 	  411   // ":No recipient given (PRIVMSG)"
+#define	ERR_NOTEXTTOSEND	  412   // ":No text to send"
+#define	ERR_INPUTTOOLONG	  417   // ":Input line too long"
 #define ERR_UNKNOWNCOMMAND    421   // "<command> :Unknown command"
 #define ERR_NONICKNAMEGIVEN   431   // ":No nickname given"
 #define ERR_ERRONEUSNICKNAME  432   // "<nick> :Erroneous nickname"
@@ -58,7 +61,5 @@
 #define ERR_CHANOPRIVSNEEDED  482   // "<channel> :You're not channel operator"
 #define ERR_UMODEUNKNOWNFLAG  501   // ":Unknown MODE flag"
 #define ERR_USERSDONTMATCH    502   // ":Cannot change mode for other users"
-#define ERR_NORECIPIENT 	  411   // ":No recipient given (PRIVMSG)"
-#define	ERR_NOTEXTTOSEND	  412   // ":No text to send"
 
 #endif 
