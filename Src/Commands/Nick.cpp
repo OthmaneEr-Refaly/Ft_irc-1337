@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:48:39 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:49:03 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:28:56 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 {
 	if (cmd.params.empty())
 	{
-		client.sendNumericReply(ERR_NONICKNAMEGIVEN, "NICK", "No Nickname given");
+		client.sendNumericReply(server, ERR_NONICKNAMEGIVEN, "NICK", "No Nickname given");
 		return;
 	}
 	
@@ -29,7 +29,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 	
 	if (!isNickValid(newNick))
 	{
-		client.sendNumericReply(ERR_ERRONEUSNICKNAME, newNick, "Invalid Nickname");
+		client.sendNumericReply(server, ERR_ERRONEUSNICKNAME, newNick, "Invalid Nickname");
 		return ;
 	}
 	
@@ -37,7 +37,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 
 	if (server.isNicknameInUse(normNick))
 	{
-		client.sendNumericReply(ERR_NICKNAMEINUSE, newNick, "Nickname is already in use");
+		client.sendNumericReply(server, ERR_NICKNAMEINUSE, newNick, "Nickname is already in use");
     	return;
 	}
 

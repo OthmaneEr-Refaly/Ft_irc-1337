@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:52:49 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:26:59 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,6 @@ void	dispatchCommand(Server &server, Client &client, const Command &cmd)
 	if (it != commandMap.end())
 		it->second(server, client, cmd);
 	else
-		client.sendNumericReply(ERR_UNKNOWNCOMMAND, cmd.command, "Unknown command");
+		client.sendNumericReply(server, ERR_UNKNOWNCOMMAND, cmd.command, "Unknown command");
 }
 

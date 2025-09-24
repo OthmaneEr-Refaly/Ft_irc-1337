@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:28:01 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:28:34 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:28:26 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 {
 	if (cmd.params.size() < 2)
 	{
-		client.sendNumericReply(ERR_NEEDMOREPARAMS, "KICK", "Not enough parameters");
+		client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "KICK", "Not enough parameters");
 		return ;
 	}
 	std::string channelName = cmd.params[0];
@@ -44,24 +44,24 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	Channel *channel = server.getChannel(channelName);
 	if (!channel)
 	{
-		client.sendNumericReply(ERR_NOSUCHCHANNEL, channelName, "No such channel");
+		client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
 		return ;
 	}
 	if (!channel->isOperator(&client))
 	{
-		client.sendNumericReply(ERR_CHANOPRIVSNEEDED, "KICK", "You're not channel operator");
+		client.sendNumericReply(server, ERR_CHANOPRIVSNEEDED, "KICK", "You're not channel operator");
 		return ;
 	}
 	
 	Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
 	if (!targetClient)
 	{
-		client.sendNumericReply(ERR_NOSUCHNICK, targetNick, "No such nick");
+		client.sendNumericReply(server, ERR_NOSUCHNICK, targetNick, "No such nick");
 		return ;
 	}
 	if (!channel->isMember(targetClient))
 	{
-		client.sendNumericReply(ERR_USERNOTINCHANNEL, targetNick + " " + channelName, "they aren't in that channel");
+		client.sendNumericReply(server, ERR_USERNOTINCHANNEL, targetNick + " " + channelName, "they aren't in that channel");
 		return ;
 	}
 	

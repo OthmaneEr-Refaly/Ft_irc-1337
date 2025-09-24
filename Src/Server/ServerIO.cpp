@@ -114,7 +114,7 @@ void Server::handleClientRead(int fd)
 		if (line.size() > IRC_MAX_CONTENT)
 		{
 			line = line.substr(0, IRC_MAX_CONTENT);
-			client.sendNumericReply(ERR_INPUTTOOLONG, "*", "Input line too long, truncated");
+			client.sendNumericReply(*this, ERR_INPUTTOOLONG, "*", "Input line too long, truncated");
 		}
 
 		std::cout << "Parsed command from fd " << fd << ": [" << line << "]" << std::endl;
@@ -228,7 +228,6 @@ void Server::handleClientWrite(int fd)
 	if (out.empty()) 
 	{
 		disableWriteInterest(fd);
-		client->setWantsWrite(false);
 		return;
 	}
 
@@ -248,7 +247,6 @@ void Server::handleClientWrite(int fd)
 		{
 			// When everything is sent stop POLLOUT
 			disableWriteInterest(fd);
-			client->setWantsWrite(false);
 		}
 		return;
 	}
@@ -259,7 +257,6 @@ void Server::handleClientWrite(int fd)
 		if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
 		{
 			// Not a fatal error, just try again later
-			client->setWantsWrite(true);
 			return;
 		}
 		

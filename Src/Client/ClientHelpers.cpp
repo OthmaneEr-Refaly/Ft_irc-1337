@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:59:05 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 17:02:51 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 09:24:43 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,7 @@
 	void Client::markForClose(){ _closing = true; }
 
 // ===== Messaging =====
-	void Client::sendMessage(const std::string& message)
-	{
-		enqueueOutput(message + "\r\n");
-		_want_write = true; // Ensure we want to write when there's data to send
-	}
-
-	void Client::sendNumericReply(int code, const std::string &arg, const std::string &message)
+	void Client::sendNumericReply(Server &server ,int code, const std::string &arg, const std::string &message)
 	{
 		std::string			reply;
 		std::stringstream	s_code;
@@ -77,5 +71,5 @@
 			reply += ":" + message;
 		reply += "\r\n";
 		
-		write(_fd, reply.c_str(), reply.size());
+		server.sendMsgToClient(this, reply);
 	}

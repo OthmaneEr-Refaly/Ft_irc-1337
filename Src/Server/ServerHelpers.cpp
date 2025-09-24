@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:12:59 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 16:18:00 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:35:07 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,16 @@ void	Server::tryRegister(Client &client)
 
 	client.setRegistered(true);
 
-	client.sendNumericReply(RPL_WELCOME, client.getNick(),
+	client.sendNumericReply(*this, RPL_WELCOME, client.getNick(),
 	"Welcome to the IRC network " + client.getNick() + "!" + client.getUser() + "@" + client.getHost());
 
-	client.sendNumericReply(RPL_YOURHOST, client.getNick(),
+	client.sendNumericReply(*this, RPL_YOURHOST, client.getNick(),
 	"Your host is ft_irc, running version sma9ma9");
 
-	client.sendNumericReply(RPL_CREATED, client.getNick(),
+	client.sendNumericReply(*this, RPL_CREATED, client.getNick(),
 	"This server was created <date>");
 
-	client.sendNumericReply(RPL_MYINFO, client.getNick(),
+	client.sendNumericReply(*this, RPL_MYINFO, client.getNick(),
 	"ft_irc sam9ma9aw(1.0) o o"/*message:"Server name, version, supported user & channel modes"*/);  
 }
 

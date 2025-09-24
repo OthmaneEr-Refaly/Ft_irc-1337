@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:55:12 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 16:56:25 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 09:23:06 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@
         return _invited_nicks.count(nick) > 0;
     }
 
-    void Channel::notifyMembers(const std::string& message)
+    void Channel::notifyMembers(Server &server, const std::string& message)
 	{
         for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
 		{
-            (*it)->sendMessage(message);
+            server.sendMsgToClient(*it, message + "\r\n");
         }
     }

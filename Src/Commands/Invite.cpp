@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 15:44:25 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:41:20 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:27:43 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	handleInvite(Server &server, Client &client, const Command &cmd)
 {
 	if (cmd.params.size() < 2)
 	{
-		client.sendNumericReply(ERR_NEEDMOREPARAMS, "INVITE", "Not enough parameters");
+		client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "INVITE", "Not enough parameters");
 		return ;
 	}
 	
@@ -41,37 +41,37 @@ void	handleInvite(Server &server, Client &client, const Command &cmd)
 	Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
 	if (!targetClient)
 	{
-		client.sendNumericReply(ERR_NOSUCHNICK, targetNick, "No such nick");
+		client.sendNumericReply(server, ERR_NOSUCHNICK, targetNick, "No such nick");
 		return ;
 	}
 
 	Channel *channel = server.getChannel(channelName);
 	if (!channel)
 	{
-		client.sendNumericReply(ERR_NOSUCHCHANNEL, channelName, "No such channel");
+		client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
 		return ;
 	}
 	
 	if (!channel->isMember(&client))
 	{
-		client.sendNumericReply(ERR_NOTONCHANNEL, channelName, "You're not on that channel");
+		client.sendNumericReply(server, ERR_NOTONCHANNEL, channelName, "You're not on that channel");
 		return ;
 	}
 	
 	if (channel->isInviteOnly() && !channel->isOperator(&client))
 	{
-		client.sendNumericReply(ERR_CHANOPRIVSNEEDED, channelName, "You're not channel operator");
+		client.sendNumericReply(server, ERR_CHANOPRIVSNEEDED, channelName, "You're not channel operator");
 		return ;
 	}
 	
 	if (channel->isMember(targetClient))
 	{
-		client.sendNumericReply(ERR_USERONCHANNEL, targetNick + " " + channelName, "is already on channel");
+		client.sendNumericReply(server, ERR_USERONCHANNEL, targetNick + " " + channelName, "is already on channel");
 		return ;
 	}
 	
 	channel->addInvite(targetNick);
 	std::string formattedMsg = inviteMsgFormat(client, channelName, targetNick);
 	server.sendMsgToClient(targetClient, formattedMsg);
-	client.sendNumericReply(RPL_INVITING, channelName + " " + targetNick, "");
+	client.sendNumericReply(server, RPL_INVITING, channelName + " " + targetNick, "");
 }

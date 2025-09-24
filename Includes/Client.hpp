@@ -12,7 +12,6 @@ class Client
 		int			_fd;			// Socket file descriptor for this client
 		std::string	_inbuf;			// Data received but not yet processed
 		std::string _outbuf;		// Data to send when socket is writable
-		bool		_want_write;	// True if poll() should watch for POLLOUT
 		bool		_closing;// True if the connection should be closed
 
 	// ===== Identity =====
@@ -53,7 +52,6 @@ class Client
 		void setFd(int fd);
 		void setInbuf(const std::string& buf);
 		void setOutbuf(const std::string& buf);
-		void setWantsWrite(bool value);
 		void setRegistered(bool value);
 		void setPassOk(bool value);
 		void setNick(const std::string& nick);
@@ -75,8 +73,7 @@ class Client
 		void markForClose();	// Prepare client for removal
 	
 	// ===== Messaging =====
-		void sendMessage(const std::string& message);
-		void sendNumericReply(int code, const std::string &arg, const std::string &message);
+		void sendNumericReply(Server &server, int code, const std::string &arg, const std::string &message);
 };
 
 #endif

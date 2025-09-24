@@ -68,16 +68,16 @@ class Channel
 		bool isInvited(const std::string& nick) const;
 
 	// ===== JOIN/LEAVE Helpers =====
-		void executeJoin(Client* c, const std::string& key); // Add to members/operators/invites
+		void executeJoin(Server &server, Client* c, const std::string& key); // Add to members/operators/invites
 		bool canJoin(Client* c, const std::string& key) const; // Check invite/key/limit
 		void handleLeave(Client* c); // Remove from members/operators/invites
-		void notifyMembers(const std::string& message);
+		void notifyMembers(Server &server, const std::string& message);
 
 
 
-		void executePart(Client* c);
-		void executeTopic(Client* c, const std::string& topic);
-		void executeMode(Client* c, const std::string& mode, const std::string& param);
+		void executePart(Server &server, Client* c);
+		void executeTopic(Server &server, Client* c, const std::string& topic);
+		void executeMode(Server &server, Client* c, const std::string& mode, const std::string& param);
 
 };
 

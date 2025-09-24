@@ -6,20 +6,21 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:37:42 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 16:53:11 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 09:33:27 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
 
-void Channel::executeMode(Client* c, const std::string& mode, const std::string& param)
+void Channel::executeMode(Server &server, Client* c, const std::string& mode, const std::string& param)
 {
 	std::cout << "Debugging: executeMode called by client " << c->getNick() << " on channel " << _name << std::endl;
 
 	if (!isOperator(c)) 
 	{
 		std::cout << "Debugging: Client " << c->getNick() << " is not an operator and cannot change modes" << std::endl;
-		c->sendMessage("482 " + c->getNick() + " " + _name + " :You're not a channel operator");
+		c->sendNumericReply(server, 482, _name, "You're not a channel operator");
+        return;
 		return;
 	}
 
@@ -82,13 +83,13 @@ void Channel::executeMode(Client* c, const std::string& mode, const std::string&
 
 			default:
 				std::cout << "Debugging: Unknown mode flag '" << modeChar << "'" << std::endl;
-				c->sendMessage("501 " + c->getNick() + " " + _name + " :Unknown mode flag");
+				c->sendNumericReply(server, 501, std::string(1, modeChar), "Unknown mode flag");
 				break;
 		}
 	}
 
 	std::cout << "Debugging: Notifying members about mode change" << std::endl;
-	notifyMembers(":" + c->getNick() + " MODE " + _name + " " + mode + " " + param);
+	notifyMembers(server, ":" + c->getNick() + " MODE " + _name + " " + mode + " " + param);
 }
 
 void handleMode(Server &server, Client &client, const Command &cmd)
@@ -96,7 +97,7 @@ void handleMode(Server &server, Client &client, const Command &cmd)
 
 	if(cmd.params.empty())
 	{
-		client.sendNumericReply(ERR_NEEDMOREPARAMS, "MODE", "Not enough parameters");
+		client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "MODE", "Not enough parameters");
 		return;
 	}
 
@@ -104,12 +105,12 @@ void handleMode(Server &server, Client &client, const Command &cmd)
 	Channel* channel = server.getChannel(channelName);
 	if (!channel)
 	{
-		client.sendNumericReply(403, channelName, "No such channel");
+		client.sendNumericReply(server, 403, channelName, "No such channel");
 		return;
 	}
 
 	std::string mode = cmd.params[1];
 	std::string param = (cmd.params.size() > 2) ? cmd.params[2] : "";
 
-	channel->executeMode(&client, mode, param);
+	channel->executeMode(server, &client, mode, param);
 }

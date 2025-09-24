@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 11:41:48 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 17:00:39 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:23:12 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 // ===== Canonical form =====
 	Client::Client() 
-		: _fd(-1), _want_write(false), _closing(false), _registered(false), _passOk(false) {}
+		: _fd(-1), _closing(false), _registered(false), _passOk(false) {}
 
 	Client::Client(int fd)
-		: _fd(fd), _want_write(false), _closing(false), _registered(false), _passOk(false) {}
+		: _fd(fd), _closing(false), _registered(false), _passOk(false) {}
 
 	Client::Client(const Client& other)
 	{
@@ -31,7 +31,6 @@
 			_fd = other._fd;
 			_inbuf = other._inbuf;
 			_outbuf = other._outbuf;
-			_want_write = other._want_write;
 			_registered = other._registered;
 			_passOk = other._passOk;
 			_closing = other._closing;
@@ -50,7 +49,6 @@
 	int								Client::getFd() const { return (_fd); }
 	const std::string&				Client::getInbuf() const { return (_inbuf); }
 	const std::string&				Client::getOutbuf() const { return (_outbuf); }
-	bool							Client::getWantsWrite() const { return (_want_write); }
 	bool 							Client::isRegistered() const { return (_registered); }
 	bool 							Client::isClosing() const { return (_closing); }
 	bool 							Client::isPassOk() const { return (_passOk); }
@@ -64,7 +62,6 @@
 	void Client::setFd(int fd) { _fd = fd; }
 	void Client::setInbuf(const std::string& buf) { _inbuf = buf; }
 	void Client::setOutbuf(const std::string& buf) { _outbuf = buf; }
-	void Client::setWantsWrite(bool value) { _want_write = value; }
 	void Client::setRegistered(bool value) { _registered = value; }
 	void Client::setPassOk(bool value) { _passOk = value; }
 	void Client::setNick(const std::string& nick) { _nick = nick; }

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:21:56 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:57:29 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 08:29:36 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 {
 	if (cmd.params.empty())
 	{
-		client.sendNumericReply(ERR_NORECIPIENT, "PRIVMSG", "No recipient given (PRIVMSG)");
+		client.sendNumericReply(server, ERR_NORECIPIENT, "PRIVMSG", "No recipient given (PRIVMSG)");
 		return ;
 	}
 
 	if (cmd.params.size() < 2)
 	{
-		client.sendNumericReply(ERR_NOTEXTTOSEND, cmd.params[0], "No text to send");
+		client.sendNumericReply(server, ERR_NOTEXTTOSEND, cmd.params[0], "No text to send");
 		return ;
 	}
 
@@ -46,13 +46,13 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 			Channel *chan = server.getChannel(target);
 			if (!chan)
 			{
-				client.sendNumericReply(ERR_NOSUCHCHANNEL, target, "No Such channel");
+				client.sendNumericReply(server, ERR_NOSUCHCHANNEL, target, "No Such channel");
 				continue ;
 			}
 
 			if (!chan->isMember(&client))
 			{
-				client.sendNumericReply(ERR_NOTONCHANNEL, target, "You're not on that channel");
+				client.sendNumericReply(server, ERR_NOTONCHANNEL, target, "You're not on that channel");
 				continue ;
 			}
 
@@ -71,7 +71,7 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 			std::string normNick = normalizeNick(target);
 			if (!server.isNicknameInUse(normNick))
 			{
-				client.sendNumericReply(ERR_NOSUCHNICK, target, "No such nick/channel");
+				client.sendNumericReply(server, ERR_NOSUCHNICK, target, "No such nick/channel");
 				continue ;
 			}
 			std::map<std::string, Client*>::const_iterator it = server.getNickToClient().find(normNick);
