@@ -63,18 +63,6 @@ void Server::acceptNewClient()
 
 void Server::handleClientRead(int fd)
 {
-	/*****************************************************************************/
-	/* Function: handleClientRead                                                */
-	/* How it works:                                                             */
-	/*   1. Read up to 512 bytes from client socket using recv().                */
-	/*   2. Handle disconnection (bytes_read == 0) or error (bytes_read < 0).    */
-	/*   3. Append received data to client's _inbuf.                             */
-	/*   4. Extract complete lines using popCompleteLines().                     */
-	/* Key points:                                                               */
-	/*   - Leftover incomplete lines remain in _inbuf.                           */
-	/*   - Call removeClient(fd) on disconnect or error.                         */
-	/*****************************************************************************/
-
 	// Find client by fd
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
 	if (it == _fd_to_client.end())
@@ -143,7 +131,7 @@ Command Server::parseRawLine(const std::string &line)
         cmd.prefix = line.substr(pos + 1, spacePos - pos - 1);
         pos = spacePos + 1;
     }
-	std::cout << "this is the prifex" << cmd.prefix << std::endl;
+	std::cout << "this is the prefix" << cmd.prefix << std::endl;
     // Skip spaces after prefix
     while (pos < len && line[pos] == ' ') 
         pos++;
@@ -205,24 +193,13 @@ Command Server::parseRawLine(const std::string &line)
 
 void Server::handleClientWrite(int fd)
 {
-	/*****************************************************************************/
-	/* Function: handleClientWrite                                               */
-	/* How it works:                                                             */
-	/*   1. Check if client's _outbuf is empty -> stop POLLOUT monitoring.       */
-	/*   2. Send data from _outbuf using send().                                 */
-	/*   3. Remove the sent portion from _outbuf.                                */
-	/* Key points:                                                               */
-	/*   - Handle EAGAIN/EWOULDBLOCK/EINTR errors by retrying later.             */
-	/*   - Stop POLLOUT when _outbuf becomes empty.                              */
-	/*****************************************************************************/
-
 	// Find the client by fd
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
 	if (it == _fd_to_client.end())
 		return; // if no more client return
 
 	Client* client = it->second;
-	std::string &out = const_cast<std::string&>(client->getOutbuf());
+	std::string &out = client->getOutbufRef();
 
 	// If Nothing to send → stop listening for POLLOUT
 	if (out.empty()) 
@@ -263,13 +240,13 @@ void Server::handleClientWrite(int fd)
 		if (errno == EPIPE || errno == ECONNRESET)
 		{
 			// Client disconnected
-			removeClient(fd);
+			disconnectClient(fd, "Connection reset by peer");
 			return;
 		}
 
 		// Unexpected error, log + cleanup
 		std::cerr << "send() error on fd " << fd << ": " << strerror(errno) << std::endl;
-		removeClient(fd);
+		disconnectClient(fd, "Send error");
 		return;
 	}
 
@@ -278,17 +255,6 @@ void Server::handleClientWrite(int fd)
 
 void Server::removeClient(int fd)
 {
-	/*****************************************************************************/
-	/* Function: removeClient                                                    */
-	/* How it works:                                                             */
-	/*   1. Close the client socket.                                             */
-	/*   2. Remove fd from _pollTable.                                            */
-	/*   3. Delete Client object and remove from _fd_to_client.                  */
-	/*   4. Remove from _nick_to_client map if client was registered.            */
-	/* Key points:                                                               */
-	/*   - Prevent memory leaks by deleting Client objects.                      */
-	/*   - Ensure fd is no longer monitored in _pollTable.                        */
-	/*****************************************************************************/
 
 	std::cout << "Removing client fd=" << fd << std::endl;
 
@@ -300,24 +266,39 @@ void Server::removeClient(int fd)
 	if (idx != -1)
 		_pollTable.erase(_pollTable.begin() + idx);
 
-	// 3. Remove from fd_to_client and delete client object
+	// 3. Remove from fd_to_client and cleanup channels before delete
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
 	if (it != _fd_to_client.end())
 	{
-		delete it->second;
+		Client* c = it->second;
+
+		std::string nick = c->getNick();
+
+		const std::set<std::string>& chans = c->getChannels();
+		for (std::set<std::string>::const_iterator chit = chans.begin(); chit != chans.end(); ++chit)
+		{
+			Channel* chan = getChannel(*chit);
+			if (chan)
+			{
+				if (chan->isMember(c))
+					chan->removeMember(c);
+				if (chan->isOperator(c))
+					chan->removeOperator(c);
+
+				chan->removeInvite(c->getNick());
+
+				if (chan->getMembers().empty())
+					removeChannel(*chit);
+			}
+		}
+
+        if (!nick.empty())
+            _nick_to_client.erase(nick);
+
+		delete c;
 		_fd_to_client.erase(it);
 	}
 
-	// 4. Remove from nick_to_client
-	for (std::map<std::string, Client*>::iterator nit = _nick_to_client.begin(); nit != _nick_to_client.end(); ++nit)
-	{
-		if (nit->second->getFd() == fd)
-		{
-			_nick_to_client.erase(nit);
-			break;
-		}
-	}
 	std::cout << "Client fd=" << fd << " removed successfully" << std::endl;
 }
 
-void Server::sendToFd(int fd, const std::string& msg) { (void)fd; (void)msg; /* TO DO; */ }

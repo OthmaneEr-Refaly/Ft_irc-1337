@@ -38,7 +38,7 @@ class Client
 		int								getFd() const;
 		const std::string&				getInbuf() const;
 		const std::string&				getOutbuf() const;
-		bool							getWantsWrite() const;
+		std::string&					getOutbufRef(); // allows safe modification of outbuf
 		bool 							isRegistered() const;
 		bool 							isClosing() const;
 		bool 							isPassOk() const;

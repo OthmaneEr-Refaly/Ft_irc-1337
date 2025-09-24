@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:12:59 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:35:07 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:01:58 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,37 @@
 // ===== Client management =====
 void Server::disconnectClient(int fd, const std::string &reason)
 {
-	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
-	if (it == _fd_to_client.end())
-		return ;
-	
-	Client *client = it->second;
+    std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
+    if (it == _fd_to_client.end())
+        return;
 
-	if(!reason.empty())
-	{
-		std::string msg = ":" + client->getNick() + " QUIT :" + reason + "\r\n";
-		sendToFd(fd, msg); // sendToFd() function still not implemented.
-	}
-	client->markForClose();
+    Client *client = it->second;
 
-	std::cout << "marked Client Fd=" << fd << " for close ( reason: " << reason << " )" << std::endl;
+    if (client->isClosing())
+        return;
+
+    std::string prefix = ":" + client->getNick() + "!" + client->getUser() + "@" + client->getHost();
+    std::string quitMsg = prefix + " QUIT :" + (reason.empty() ? "Client disconnected" : reason) + "\r\n";
+
+    const std::set<std::string> &chans = client->getChannels();
+    for (std::set<std::string>::const_iterator chit = chans.begin(); chit != chans.end(); ++chit)
+    {
+        Channel* chan = getChannel(*chit);
+        if (!chan) continue;
+
+        const std::set<Client*> &members = chan->getMembers();
+        for (std::set<Client*>::const_iterator mit = members.begin(); mit != members.end(); ++mit)
+        {
+            Client* member = *mit;
+            if (member->getFd() == fd) // skip the quitting client
+                continue;
+            sendMsgToClient(member, quitMsg);
+        }
+    }
+
+    client->markForClose();
+
+    std::cout << "marked Client Fd=" << fd << " for close ( reason: " << reason << " )" << std::endl;
 }	
 
 void	Server::tryRegister(Client &client)

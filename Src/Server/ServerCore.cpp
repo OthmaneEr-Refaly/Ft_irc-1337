@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/15 12:57:06 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:08:09 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,6 @@ void Server::stop()
 
 void Server::handlePollEvents()
 {
-	/*****************************************************************************/
-	/* Function: handlePollEvents 												 */
-	/* How it works : 												 			 */
-	/*   1. Poll all fds in _pollTable with timeout 1000ms.                       */
-	/*   2. Iterate through poll results:                                        */
-	/*      - Listening socket ready -> acceptNewClient()                        */
-	/*      - Client fd ready for read -> handleClientRead(fd)                   */
-	/*      - Client fd ready for write -> handleClientWrite(fd)                 */
-	/*      - Error / disconnect -> removeClient(fd)                             */
-	/* Key points:                                                               */
-	/*   - Ensure _pollTable contains listening socket.                           */
-	/*   - poll() should not block indefinitely.                                 */
-	/*****************************************************************************/
 
 	if (_pollTable.empty())
 		return ;
@@ -102,6 +89,6 @@ void Server::handlePollEvents()
 		if (result_event & POLLOUT) // 3. Existing client ready to send
 			handleClientWrite(fd);
 		if (result_event & (POLLERR | POLLHUP | POLLNVAL)) // 4. Error or disconnection
-			removeClient(fd);
+			disconnectClient(fd, "Connection closed");
 	}
 } 

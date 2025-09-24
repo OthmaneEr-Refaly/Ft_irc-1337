@@ -39,7 +39,6 @@ class Server
 		void	handlePollEvents();
 		void	handleClientRead(int fd);
 		void	handleClientWrite(int fd);
-		void	sendToFd(int fd, const std::string& msg);
 	
 	// ===== New Poll helper functions =====
 		int		findPollIndex(int fd) const;

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/15 11:41:48 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:23:12 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:20:28 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@
 	int								Client::getFd() const { return (_fd); }
 	const std::string&				Client::getInbuf() const { return (_inbuf); }
 	const std::string&				Client::getOutbuf() const { return (_outbuf); }
+	std::string& 					Client::getOutbufRef() { return (_outbuf); }
 	bool 							Client::isRegistered() const { return (_registered); }
 	bool 							Client::isClosing() const { return (_closing); }
 	bool 							Client::isPassOk() const { return (_passOk); }
