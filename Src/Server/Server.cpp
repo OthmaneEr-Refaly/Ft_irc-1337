@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:13:32 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 16:17:31 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/25 10:59:13 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@
 	{
 		if (this != &other)
 		{
-			_port          = other._port;
-			_password      = other._password;
-			_listen_fd     = other._listen_fd;
-			_pollTable     = other._pollTable;
-			_running       = other._running;
-			_fd_to_client  = other._fd_to_client;
-			_nick_to_client= other._nick_to_client;
-			_channels      = other._channels;
+			_port           = other._port;
+			_password       = other._password;
+			_listen_fd      = other._listen_fd;
+			_pollTable      = other._pollTable;
+			_running        = other._running;
+			_fd_to_client   = other._fd_to_client;
+			_nick_to_client = other._nick_to_client;
+			_channels       = other._channels;
 		}
 		return *this;
 	}

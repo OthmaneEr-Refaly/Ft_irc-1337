@@ -62,6 +62,7 @@ SRCS        = Src/main.cpp \
               Src/Server/ServerPoll.cpp \
               Src/Server/ServerIO.cpp \
               Src/Server/ServerInit.cpp \
+			  Src/Server/ServerParseLine.cpp \
 			  Src/Commands/CommandHandler.cpp \
 			  Src/Commands/CommandHelpers.cpp \
 			  Src/Commands/Pass.cpp \

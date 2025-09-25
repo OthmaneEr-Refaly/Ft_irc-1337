@@ -6,23 +6,21 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 16:08:09 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:29:04 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../Includes/Server.hpp"
-#include "../../Includes/Client.hpp"
-#include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
-#include <netinet/in.h>
-#include <fcntl.h>
-#include <stdio.h>
 
 void Server::run() 
 {
 	std::cout << "inside the run function" << std::endl;
 	_running = true;
 
+	g_instance = this;
+	signal(SIGINT, Server::handleSignal);
+	signal(SIGTERM, Server::handleSignal);
+	
 	initListenSocket(); // Initialize the listening socket
 	if (!_running)
 		return;
@@ -48,6 +46,26 @@ void Server::run()
 
 void Server::stop()
 {
+	std::cout << "Stopping server gracefully..." << std::endl;
+	_running = false;
+
+	if (_listen_fd != -1)
+	{
+		close(_listen_fd);
+		_listen_fd = -1;
+	}
+
+	for (std::map<int, Client*>::iterator it = _fd_to_client.begin(); it != _fd_to_client.end(); )
+	{
+		Client *client = it->second;
+		++it; // increment before disconnect
+		disconnectClient(client->getFd(), "Server shutting down");
+	}
+
+	_pollTable.clear();
+	_fd_to_client.clear();
+	_nick_to_client.clear();
+	_channels.clear();
 }
 
 void Server::handlePollEvents()

@@ -19,77 +19,80 @@ class Server
 {
 	private:
 	// ===== Configuration =====
-		int				_port;
-		std::string		_password;
-
+	int				_port;
+	std::string		_password;
+	
 	// ===== Networking state =====
-		int							_listen_fd; // Listening socket fd
-		std::vector<struct pollfd>	_pollTable;  // Poll list
-		bool						_running;   // Main loop flag
-
+	int							_listen_fd; // Listening socket fd
+	std::vector<struct pollfd>	_pollTable;  // Poll list
+	bool						_running;   // Main loop flag
+	
 	// ===== Data structures =====
-		std::map<int, Client*>				_fd_to_client;
-		std::map<std::string, Client*>		_nick_to_client;
-		std::map<std::string, Channel*>		_channels;
-
+	std::map<int, Client*>				_fd_to_client;
+	std::map<std::string, Client*>		_nick_to_client;
+	std::map<std::string, Channel*>		_channels;
+	
 	// ===== Internal helpers (defined in .cpp) =====
-		void	initListenSocket();
-		void	acceptNewClient();
-		void	removeClient(int fd);
-		void	handlePollEvents();
-		void	handleClientRead(int fd);
-		void	handleClientWrite(int fd);
+	void	initListenSocket();
+	void	acceptNewClient();
+	void	removeClient(int fd);
+	void	handlePollEvents();
+	void	handleClientRead(int fd);
+	void	handleClientWrite(int fd);
 	
 	// ===== New Poll helper functions =====
-		int		findPollIndex(int fd) const;
-		void	enableWriteInterest(int fd);
-		void	disableWriteInterest(int fd);
-
-
+	int		findPollIndex(int fd) const;
+	void	enableWriteInterest(int fd);
+	void	disableWriteInterest(int fd);
+	
+	
 	public:
 	// ===== Canonical form =====
-				Server();
-				Server(int port, const std::string& password);
-				Server(const Server& other);
-		Server&	operator=(const Server& other);
-				~Server();
-
+	Server();
+	Server(int port, const std::string& password);
+	Server(const Server& other);
+	Server&	operator=(const Server& other);
+	~Server();
+	
 	// ===== Getters =====
-		int										getPort() const;
-		const std::string&						getPassword() const;
-		bool									isRunning() const;
-		const std::map<int, Client*>&			getFdToClient() const;
-		const std::map<std::string, Client*>&	getNickToClient() const;
-		const std::map<std::string, Channel*>&	getChannels() const;
-
+	int										getPort() const;
+	const std::string&						getPassword() const;
+	bool									isRunning() const;
+	const std::map<int, Client*>&			getFdToClient() const;
+	const std::map<std::string, Client*>&	getNickToClient() const;
+	const std::map<std::string, Channel*>&	getChannels() const;
+	
 	// ===== Setters =====
-		void 		setRunning(bool value);
-
+	void 		setRunning(bool value);
+	
 	// ===== Main control =====
-		void 		run();  // Start the server loop
-		void 		stop(); // Stop the server gracefully
-		
+	void 		run();  // Start the server loop
+	void 		stop(); // Stop the server gracefully
+	
 	// ===== Parsing functions ====
-		Command 	parseRawLine(const std::string &line);
-
+	Command 	parseRawLine(const std::string &line);
+	
 	// ===== Client management =====
-		void		disconnectClient(int fd, const std::string &reason);
-		void		tryRegister(Client &client);
-
+	void		disconnectClient(int fd, const std::string &reason);
+	void		tryRegister(Client &client);
+	
 	// ===== Nickname management =====
-		void		registerNickname(const std::string &nick, Client *client);
-		void		unregisterNickname(const std::string &nick);
-		bool		isNicknameInUse(const std::string &nick) const;
-		Client		*findClientByNick(const std::string &nick);
+	void		registerNickname(const std::string &nick, Client *client);
+	void		unregisterNickname(const std::string &nick);
+	bool		isNicknameInUse(const std::string &nick) const;
+	Client		*findClientByNick(const std::string &nick);
 	
 	// ===== Channel management =====
-		Channel*	getChannel(const std::string& channelName);
-		Channel*	createChannel(const std::string& channelName);
-		void		removeChannel(const std::string& channelName);
-
+	Channel*	getChannel(const std::string& channelName);
+	Channel*	createChannel(const std::string& channelName);
+	void		removeChannel(const std::string& channelName);
+	
 	// ===== Messaging functions =====
-		void		sendMsgToClient(Client *client, const std::string &msg);
-		std::string	enforceMessageLength(const std::string &rawMessage);
+	void		sendMsgToClient(Client *client, const std::string &msg);
+	std::string	enforceMessageLength(const std::string &rawMessage);
+	
+	static Server*	g_instance;
+	static void	handleSignal(int signum);
 };
 
 #endif

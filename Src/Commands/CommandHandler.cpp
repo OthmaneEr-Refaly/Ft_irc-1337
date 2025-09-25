@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:26:59 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:57:30 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,33 @@ void	initCommandMap()
 
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)
 {
+	if (!client.isRegistered())
+	{
+		if (cmd.command == "PASS")
+		{
+			handlePass(server, client, cmd);
+			return ;
+		}
+		
+		if (cmd.command == "NICK")
+		{
+			handleNick(server, client, cmd);
+			return ;
+		}
+		if (cmd.command == "USER")
+		{
+			handleUser(server, client, cmd);
+			return ;
+		}
+		if (cmd.command == "QUIT")
+		{
+			handleQuit(server, client, cmd);
+			return ;
+		}
+	}
+	
 	std::map<std::string, CommandFunction>::iterator it = commandMap.find(cmd.command);
-
+	
 	if (it != commandMap.end())
 		it->second(server, client, cmd);
 	else

@@ -31,5 +31,9 @@
 #include <errno.h>       // errno
 #include <stdio.h>       // perror()
 #include <stdlib.h>		 // atoi()
+#include <cctype>		 // isdigit(), isalpha()...
+#include <csignal>		 // signal(), SIGINT...
+#include <ctype.h>
+#include <cstddef>
 
 #endif
