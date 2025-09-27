@@ -6,16 +6,12 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 15:44:25 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:27:43 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/26 10:05:57 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../Includes/Server.hpp"
-#include "../../Includes/Client.hpp"
-#include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
-#include "../../Includes/CommandHandler.hpp"
-#include "../../Includes/NumericReplies.hpp"
+
 
 std::string inviteMsgFormat(const Client& op, const std::string &channelName,
 						  const std::string &targetNick)
