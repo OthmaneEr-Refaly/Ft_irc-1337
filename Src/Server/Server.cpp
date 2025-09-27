@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:13:32 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/25 10:59:13 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:26:30 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 // ===== Getters =====
 	int 									Server::getPort() const { return (_port); }
 	const std::string&						Server::getPassword() const { return (_password); }
+	const std::string&						Server::getCreationDate() const { return (_creation_date); }
 	bool 									Server::isRunning() const { return (_running); }
 	const std::map<int, Client*>&			Server::getFdToClient() const { return (_fd_to_client); }
 	const std::map<std::string, Client*>&	Server::getNickToClient() const { return (_nick_to_client); }

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:29:04 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:29:04 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ void Server::run()
 	if (!_running)
 		return;
 
+	time_t	now = time(NULL);
+	char	buffer[64];
+	strftime(buffer, sizeof(buffer), "%a %b %d %Y at %H:%M:%S", localtime(&now));
+	_creation_date = buffer;
+	
 	while(_running)
 	{
 		handlePollEvents(); // Handle events from clients and the Server

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:12:59 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 16:01:58 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:46:36 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,10 @@ void	Server::tryRegister(Client &client)
 	"Your host is ft_irc, running version sma9ma9");
 
 	client.sendNumericReply(*this, RPL_CREATED, client.getNick(),
-	"This server was created <date>");
+	"This server was created " + getCreationDate());
 
 	client.sendNumericReply(*this, RPL_MYINFO, client.getNick(),
-	"ft_irc sam9ma9aw(1.0) o o"/*message:"Server name, version, supported user & channel modes"*/);  
+	"ft_irc laFin o itkl"/*message:"Server name, version, supported user & channel modes*/);  
 }
 
 // ===== Nickname management =====

@@ -26,17 +26,26 @@ void Server::acceptNewClient()
 
 	fcntl(client_fd, F_SETFL, O_NONBLOCK);
 
+    // --- Get client IP/Host ---
+    char host[INET_ADDRSTRLEN];
+    if (inet_ntop(AF_INET, &(client_addr.sin_addr), host, sizeof(host)) == NULL)
+    {
+        perror("inet_ntop");
+        strcpy(host, "unknown");
+    }
+
+	Client* new_client = new Client(client_fd);
+	new_client->setHost(host);
+
+	_fd_to_client[client_fd] = new_client;
+
 	struct pollfd pfd;
 	pfd.fd = client_fd;
 	pfd.events = POLLIN;
 	pfd.revents = 0;  
 	_pollTable.push_back(pfd);
 
-	Client* new_client = new Client(client_fd);
-	_fd_to_client[client_fd] = new_client;
-
 	std::cout << "New client connected (fd=" << client_fd << ")" << std::endl;
-
 }
 
 void Server::handleClientRead(int fd)

@@ -26,6 +26,7 @@ class Server
 	int							_listen_fd; // Listening socket fd
 	std::vector<struct pollfd>	_pollTable;  // Poll list
 	bool						_running;   // Main loop flag
+	std::string					_creation_date;
 	
 	// ===== Data structures =====
 	std::map<int, Client*>				_fd_to_client;
@@ -57,6 +58,7 @@ class Server
 	// ===== Getters =====
 	int										getPort() const;
 	const std::string&						getPassword() const;
+	const std::string&						getCreationDate() const;
 	bool									isRunning() const;
 	const std::map<int, Client*>&			getFdToClient() const;
 	const std::map<std::string, Client*>&	getNickToClient() const;
