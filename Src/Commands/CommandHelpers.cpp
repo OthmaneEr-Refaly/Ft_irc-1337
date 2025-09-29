@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:50:40 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:53:15 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/29 10:15:28 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ std::string normalizeNick(const std::string &newNick)
 			if (norm[i] == '{')
 				norm[i] = '[';
 			else if (norm[i] == '}')
-				norm[i] = '[';
+				norm[i] = ']';
 			else if (norm[i] == '|')
 				norm[i] = '\\';
 		}

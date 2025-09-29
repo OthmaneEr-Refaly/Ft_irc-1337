@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:48:39 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:28:56 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/29 10:06:51 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 	client.setNick(newNick);
 	server.registerNickname(normNick, &client);
 
+	std::cout << normNick << std::endl;
+	
 	server.tryRegister(client);	
 }

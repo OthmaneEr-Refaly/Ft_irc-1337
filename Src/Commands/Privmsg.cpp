@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:21:56 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:29:36 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/29 10:39:08 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 		return ;
 	}
 
-	if (cmd.params.size() < 2)
+	if (cmd.params.size() < 2 || (cmd.params.size() >= 2 && cmd.params[1].empty()))
 	{
 		client.sendNumericReply(server, ERR_NOTEXTTOSEND, cmd.params[0], "No text to send");
 		return ;

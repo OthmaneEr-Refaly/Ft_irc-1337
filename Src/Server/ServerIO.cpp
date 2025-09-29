@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 16:37:51 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/27 16:38:05 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/28 17:11:52 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ void Server::handleClientRead(int fd)
 		dispatchCommand(*this, client, cmd);
 	}
 
-	// ===== TEST: send a reply back =====
-	client.enqueueOutput("Hello from server!\r\n");
-	enableWriteInterest(fd);
+	// // ===== TEST: send a reply back =====
+	// client.enqueueOutput("Hello from server!\r\n");
+	// enableWriteInterest(fd);
 }
 
 void Server::handleClientWrite(int fd)
