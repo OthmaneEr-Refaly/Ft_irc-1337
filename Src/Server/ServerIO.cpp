@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 16:37:51 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/28 17:11:52 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/09/30 09:17:26 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,19 +142,6 @@ void Server::handleClientWrite(int fd)
 	// Error handling
 	if (n == -1)
 	{
-		if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
-		{
-			// Not a fatal error, just try again later
-			return;
-		}
-		
-		if (errno == EPIPE || errno == ECONNRESET)
-		{
-			// Client disconnected
-			disconnectClient(fd, "Connection reset by peer");
-			return;
-		}
-
 		// Unexpected error, log + cleanup
 		std::cerr << "send() error on fd " << fd << ": " << strerror(errno) << std::endl;
 		disconnectClient(fd, "Send error");
