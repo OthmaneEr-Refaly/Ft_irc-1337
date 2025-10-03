@@ -80,9 +80,17 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 	}
 
 	std::string channelName = cmd.params[0];
-	std::string key = cmd.params[1]; //i still need to check if the key if optional wla la
+	//this param key causing me a segmentation fault
+	//i need to check if the key is optional or not
+	std::string key;
+	if(cmd.params[1].empty())
+	{
+		std::cout << " Debuging No key provided for JOIN, using empty string as default" << std::endl;
+		key = "";
+	}
+	else
+		key = cmd.params[1]; //i still need to check if the key if optional wla la
 
-	std::cout << " Debuging Channel name: " << channelName << ", Key: " << key << std::endl;
 
 	Channel* channel = server.getChannel(channelName);
 	if (!channel)
