@@ -78,18 +78,21 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 		client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "JOIN", "Not enough parameters");
 		return;
 	}
-
+	std::cout << " Debuging Parameters provided for JOIN" << std::endl;
+	std::cout << " Debuging cmd.params[0]: " << cmd.params[0] << std::endl;
+	//std::cout << " Debuging cmd.params[1]: " << cmd.params[1] << std::endl;
+	std::cout << " Debuging cmd.params size: " << cmd.params.size() << std::endl;
 	std::string channelName = cmd.params[0];
 	//this param key causing me a segmentation fault
 	//i need to check if the key is optional or not
 	std::string key;
-	if(cmd.params[1].empty())
+	if(cmd.params.size() > 1)
 	{
 		std::cout << " Debuging No key provided for JOIN, using empty string as default" << std::endl;
-		key = "";
+		key = cmd.params[1];
 	}
 	else
-		key = cmd.params[1]; //i still need to check if the key if optional wla la
+		key = "";
 
 
 	Channel* channel = server.getChannel(channelName);
