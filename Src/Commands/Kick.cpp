@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:28:01 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 08:28:26 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/03 13:10:40 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,58 +33,67 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	if (cmd.params.size() < 2)
 	{
 		client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "KICK", "Not enough parameters");
-		return ;
+		return;
 	}
+
 	std::string channelName = cmd.params[0];
-	std::string targetNick  = cmd.params[1];
 	std::string reason;
 	if (cmd.params.size() > 2)
 		reason = cmd.params[2];
-	
+
 	Channel *channel = server.getChannel(channelName);
 	if (!channel)
 	{
 		client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
-		return ;
+		return;
 	}
+
 	if (!channel->isOperator(&client))
 	{
 		client.sendNumericReply(server, ERR_CHANOPRIVSNEEDED, "KICK", "You're not channel operator");
-		return ;
+		return;
 	}
-	
-	Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
-	if (!targetClient)
-	{
-		client.sendNumericReply(server, ERR_NOSUCHNICK, targetNick, "No such nick");
-		return ;
-	}
-	if (!channel->isMember(targetClient))
-	{
-		client.sendNumericReply(server, ERR_USERNOTINCHANNEL, targetNick + " " + channelName, "they aren't in that channel");
-		return ;
-	}
-	
-	channel->removeMember(targetClient);
-	channel->removeInvite(targetNick);
-	targetClient->removeChannel(channelName);
-	if (channel->isOperator(targetClient))
-		channel->removeOperator(targetClient);
 
-	std::string formattedMsg = kickMsgFormat(client, channelName, targetNick, reason); 
-	server.sendMsgToClient(targetClient, formattedMsg);	
-		
-	if (channel->getMembers().empty())
+	const std::vector<std::string> targets = splitTargets(cmd.params[1]);
+
+	for (size_t i = 0; i < targets.size(); ++i)
 	{
-		server.removeChannel(channelName);
-		return ;
-	}
-	else
-	{
+		std::string targetNick = targets[i];
+		Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
+
+		if (!targetClient)
+		{
+			client.sendNumericReply(server, ERR_NOSUCHNICK, targetNick, "No such nick");
+			continue;
+		}
+
+		if (!channel->isMember(targetClient))
+		{
+			client.sendNumericReply(server, ERR_USERNOTINCHANNEL, targetNick + " " + channelName,
+									"They aren't in that channel");
+			continue;
+		}
+
+		channel->removeMember(targetClient);
+		channel->removeInvite(targetNick);
+		targetClient->removeChannel(channelName);
+		if (channel->isOperator(targetClient))
+			channel->removeOperator(targetClient);
+
+		std::string formattedMsg = kickMsgFormat(client, channelName, targetNick, reason);
+
+		server.sendMsgToClient(targetClient, formattedMsg);
+
 		const std::set<Client*> &members = channel->getMembers();
 		for (std::set<Client*>::iterator it = members.begin(); it != members.end(); ++it)
 		{
 			server.sendMsgToClient(*it, formattedMsg);
+		}
+
+		if (channel->getMembers().empty())
+		{
+			server.removeChannel(channelName);
+			break;
 		}
 	}
 }
