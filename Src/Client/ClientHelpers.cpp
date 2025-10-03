@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:59:05 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 09:24:43 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/03 11:35:01 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,14 @@
 		reply += _nick + " ";
 		
 		if (!arg.empty())
-			reply += arg + " ";
+		{
+			std::string safeArg = arg;
+	
+			if (safeArg.size() > 50)
+				safeArg = safeArg.substr(0, 50);
+			
+			reply += safeArg + "... ";
+		}
 		if (!message.empty())
 			reply += ":" + message;
 		reply += "\r\n";

@@ -1,6 +1,6 @@
 [MB]:
 
-- I need to take in count also the error msg length so it s not truncated.(if it mimics the irc servers)
+- I need to take in count also the error msg length so it s not truncated.(if it mimics the irc servers) [SOLVED]
 	- test case:
 	{
 		➜  Ft_irc-1337 git:(montasser-branch) ✗ telnet localhost 44554
@@ -18,7 +18,7 @@
 		ft_irc 451  F :Password required
 	}
 
-- Checking if user can run like in the example bellow or should i add a check for the ":" before the fullname
+- Checking if user can run like in the example bellow or should i add a check for the ":" before the fullname [SOLVED]
 	-test case:
 	{
 		in client:
@@ -37,25 +37,6 @@
 		this is the param[2] = *
 		this is the param[3] = montassir
 		this is the param[4] = bouiraden
-	}
-
-- Checking in a irc client if this case bellow is valid or the othman parser should take care of it:
-	- test case:
-	{
-		in client:
-		PASS montassir
-		NICK bob\r\nUSER bob 0 * :bob\r\n
-		ft_irc 432  bob\r\nUSER :Invalid Nickname
-	
-		in server:
-		Parsed command from fd 5: [NICK bob\r\nUSER bob 0 * :bob\r\n]
-		this is the prefix
-		this is the command NICK
-		this is the param[0] = bob\r\nUSER
-		this is the param[1] = bob
-		this is the param[2] = 0
-		this is the param[3] = *
-		this is the param[4] = bob\r\n
 	}
 
 - should an empty line pass as an error (SOLVED: explanation bellow)
