@@ -79,17 +79,31 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 		return;
 	}
 
+	//hna i check if all is valid "meaning the channel name starting with & or # and the channel name is not more then 200 charachter"
+	if(cmd.params[0][0] != '#' && cmd.params[0][0] != '&')
+	{
+		std::cout << " Debuging Invalid channel name provided for JOIN" << std::endl;
+		client.sendNumericReply(server, ERR_NOSUCHCHANNEL, cmd.params[0], "No such channel");
+		return;
+	}
+
+	if (cmd.params[0].size() > 200)
+	{
+		std::cout << " Debuging Channel name too long provided for JOIN" << std::endl;
+		client.sendNumericReply(server, ERR_NOSUCHCHANNEL, cmd.params[0], "No such channel");
+		return;
+	}
+
+
 	std::string channelName = cmd.params[0];
-	//this param key causing me a segmentation fault
-	//i need to check if the key is optional or not
 	std::string key;
-	if(cmd.params[1].empty())
+	if(cmd.params.size() > 1)
 	{
 		std::cout << " Debuging No key provided for JOIN, using empty string as default" << std::endl;
-		key = "";
+		key = cmd.params[1];
 	}
 	else
-		key = cmd.params[1]; //i still need to check if the key if optional wla la
+		key = "";
 
 
 	Channel* channel = server.getChannel(channelName);
