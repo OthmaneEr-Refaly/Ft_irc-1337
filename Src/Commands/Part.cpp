@@ -14,6 +14,8 @@
 
 void Channel::executePart(Server &server, Client* c)
 {
+	//handle this case :
+	//MODE #room1 +itkl secretKey 100
 	if (isMember(c))
 	{
 		std::cout << "Debugging: Client " << c->getNick() << " is leaving channel " << _name << std::endl;
@@ -45,12 +47,35 @@ void handlePart(Server &server, Client &client, const Command &cmd)
 		return;
 	}
 	std::string channelName = cmd.params[0];
-	//hnaya also i need to check wach ila dar part without being in the channel wach khasni n3ti error ola la,
-	Channel* channel = server.getChannel(channelName);
-	if(!channel)
+	bool isMultipleChannels = false;
+	if (channelName.find(',') != std::string::npos)
+		isMultipleChannels = true;
+
+	if(isMultipleChannels)
 	{
-		client.sendNumericReply(server, 403, channelName, "No such channel");
-		return;
+		
+		const std::vector<std::string> targets = splitTargets(cmd.params[0]);
+		for (size_t i = 0; i < targets.size(); ++i){
+
+			const std::string &channels = targets[i];
+			std::cout << " Debuging channels are : " << channels << std::endl;
+			Channel* channel = server.getChannel(channels);
+			if (!channel)
+			{
+				client.sendNumericReply(server, 403, channelName, "No such channel");
+				return;
+			}
+	
+			channel->executePart(server ,&client);
+		}
 	}
-	channel->executePart(server ,&client);
+	else{
+		Channel* channel = server.getChannel(channelName);
+		if(!channel)
+		{
+			client.sendNumericReply(server, 403, channelName, "No such channel");
+			return;
+		}
+		channel->executePart(server ,&client);
+	}
 }

@@ -16,9 +16,9 @@ bool Channel::canJoin(Client* c, const std::string& key) const
 {
 	if(_mode_invite_only && !isInvited(c->getNick()))
 		return false;
-	// if (_mode_invite_only && !(isInvited(getName())))
-	//     return false;
-	if (_key != key)
+	std::cout << "the key is " << key << std::endl;
+	std::cout << "they _key is " << _key << std::endl;
+	if (!_key.empty() && _key != key)
 		return false;
 	if (_limit > 0 && static_cast<int>(_members.size()) >= _limit)
 		return false;
@@ -27,7 +27,6 @@ bool Channel::canJoin(Client* c, const std::string& key) const
 
 void Channel::executeJoin(Server &server, Client* c ,const std::string& key)
 {
-	//============ F HAD L FUNCTION BDAL DIK SEND MESSAGE BL FUNCTION DYALK NTA DYAL L ERRORS
 	if (isMember(c))
 	{
 		c->sendNumericReply(server, 443, _name, "is already on channel");
@@ -97,6 +96,10 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 
 	std::string channelName = cmd.params[0];
 	std::string key;
+	bool isMultipleChannels = false;
+	if (channelName.find(',') != std::string::npos)
+		isMultipleChannels = true;
+
 	if(cmd.params.size() > 1)
 	{
 		std::cout << " Debuging No key provided for JOIN, using empty string as default" << std::endl;
@@ -104,14 +107,32 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 	}
 	else
 		key = "";
-
-
-	Channel* channel = server.getChannel(channelName);
-	if (!channel)
-	{
-		std::cout << " Debuging Channel does not exist, creating new channel" << std::endl;
-		channel = server.createChannel(channelName);
+	
+	if (isMultipleChannels){
+		const std::vector<std::string> targets = splitTargets(cmd.params[0]);
+		for (size_t i = 0; i < targets.size(); ++i)
+		{
+			const std::string &channels = targets[i];
+			std::cout << " Debuging channels are : " << channels << std::endl;
+			Channel* channel = server.getChannel(channels);
+			if (!channel)
+			{
+				std::cout << " Debuging Channel does not exist, creating new channel" << std::endl;
+				channel = server.createChannel(channels);
+			}
+	
+			channel->executeJoin(server, &client, key);
+		}
+	}
+	else{
+		Channel* channel = server.getChannel(channelName);
+		if (!channel)
+		{
+			std::cout << " Debuging Channel does not exist, creating new channel" << std::endl;
+			channel = server.createChannel(channelName);
+		}
+	
+		channel->executeJoin(server, &client, key);
 	}
 
-	channel->executeJoin(server, &client, key);
 }
