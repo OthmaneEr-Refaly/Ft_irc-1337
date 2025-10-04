@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:36:42 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/23 15:37:30 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 16:26:54 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	handleNotice(Server &server, Client &client, const Command &cmd)
 	{
 		const std::string &target = targets[i]; 
 		std::string formattedMsg = noticeMsgFormat(client, target, msg);
-		if (target[0] == '#')
+		if (target[0] == '#' || target[0] == '&')
 		{
 			Channel *chan = server.getChannel(target);
 			if (!chan)

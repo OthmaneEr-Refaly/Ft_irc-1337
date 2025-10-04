@@ -6,11 +6,47 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:12:59 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/27 15:46:36 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 17:07:46 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
+
+// // ===== Client management =====
+// void Server::disconnectClient(int fd, const std::string &reason)
+// {
+//     std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
+//     if (it == _fd_to_client.end())
+//         return;
+
+//     Client *client = it->second;
+
+//     if (client->isClosing())
+//         return;
+
+//     std::string prefix = ":" + client->getNick() + "!" + client->getUser() + "@" + client->getHost();
+//     std::string quitMsg = prefix + " QUIT :" + (reason.empty() ? "Client disconnected" : reason) + "\r\n";
+
+//     const std::set<std::string> &chans = client->getChannels();
+//     for (std::set<std::string>::const_iterator chit = chans.begin(); chit != chans.end(); ++chit)
+//     {
+//         Channel* chan = getChannel(*chit);
+//         if (!chan) continue;
+
+//         const std::set<Client*> &members = chan->getMembers();
+//         for (std::set<Client*>::const_iterator mit = members.begin(); mit != members.end(); ++mit)
+//         {
+//             Client* member = *mit;
+//             if (member->getFd() == fd) // skip the quitting client
+//                 continue;
+//             sendMsgToClient(member, quitMsg);
+//         }
+//     }
+
+//     client->markForClose();
+
+//     std::cout << "marked Client Fd=" << fd << " for close ( reason: " << reason << " )" << std::endl;
+// }
 
 // ===== Client management =====
 void Server::disconnectClient(int fd, const std::string &reason)
@@ -24,9 +60,14 @@ void Server::disconnectClient(int fd, const std::string &reason)
     if (client->isClosing())
         return;
 
+    // RFC 1459 QUIT message format
     std::string prefix = ":" + client->getNick() + "!" + client->getUser() + "@" + client->getHost();
     std::string quitMsg = prefix + " QUIT :" + (reason.empty() ? "Client disconnected" : reason) + "\r\n";
 
+    // === Deduplication set ===
+    std::set<Client*> recipients;
+
+    // Collect all unique recipients from all channels
     const std::set<std::string> &chans = client->getChannels();
     for (std::set<std::string>::const_iterator chit = chans.begin(); chit != chans.end(); ++chit)
     {
@@ -34,19 +75,24 @@ void Server::disconnectClient(int fd, const std::string &reason)
         if (!chan) continue;
 
         const std::set<Client*> &members = chan->getMembers();
-        for (std::set<Client*>::const_iterator mit = members.begin(); mit != members.end(); ++mit)
-        {
-            Client* member = *mit;
-            if (member->getFd() == fd) // skip the quitting client
-                continue;
-            sendMsgToClient(member, quitMsg);
-        }
+        recipients.insert(members.begin(), members.end());
     }
 
+    // Broadcast QUIT to all unique recipients (except quitting client)
+    for (std::set<Client*>::iterator rit = recipients.begin(); rit != recipients.end(); ++rit)
+    {
+        Client* member = *rit;
+        if (member == client) // skip self
+            continue;
+        sendMsgToClient(member, quitMsg);
+    }
+
+    // Cleanup: mark client for closing
     client->markForClose();
 
     std::cout << "marked Client Fd=" << fd << " for close ( reason: " << reason << " )" << std::endl;
-}	
+}
+
 
 void	Server::tryRegister(Client &client)
 {

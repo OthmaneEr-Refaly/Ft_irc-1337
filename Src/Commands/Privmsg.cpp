@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:21:56 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/29 10:39:08 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 16:26:54 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 	{
 		const std::string &target = targets[i];
 		std::string formattedMsg = privmsgFormat(client, target, msg);
-		if (target[0] == '#')
+		if (target[0] == '#' || target[0] == '&')
 		{
 			Channel *chan = server.getChannel(target);
 			if (!chan)

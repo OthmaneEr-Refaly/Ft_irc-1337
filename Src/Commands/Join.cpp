@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:40:52 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 09:28:35 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 16:18:01 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
     if (canJoin(c, key))
     {
         addMember(c);
+		c->addChannel(_name);
         if (_members.size() == 1)
             addOperator(c);
         
