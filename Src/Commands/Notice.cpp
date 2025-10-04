@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:36:42 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 16:26:54 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	handleNotice(Server &server, Client &client, const Command &cmd)
 
 		else
 		{
-			std::string normNick = normalizeNick(target);
+			std::string normNick = normalizeCase(target);
 			if (!server.isNicknameInUse(normNick))
 				continue ;
 			

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:48:39 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/29 10:06:51 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 		return ;
 	}
 	
-	std::string normNick = normalizeNick(newNick);
+	std::string normNick = normalizeCase(newNick);
 
 	if (server.isNicknameInUse(normNick))
 	{
@@ -43,7 +43,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 
 	if (!client.getNick().empty())
 	{
-		std::string oldNormNick = normalizeNick(client.getNick());
+		std::string oldNormNick = normalizeCase(client.getNick());
 		server.unregisterNickname(oldNormNick);
 	}
 	

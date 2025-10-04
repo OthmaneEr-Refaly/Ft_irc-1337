@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 12:21:56 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 16:26:54 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 
 		else
 		{
-			std::string normNick = normalizeNick(target);
+			std::string normNick = normalizeCase(target);
 			if (!server.isNicknameInUse(normNick))
 			{
 				client.sendNumericReply(server, ERR_NOSUCHNICK, target, "No such nick/channel");

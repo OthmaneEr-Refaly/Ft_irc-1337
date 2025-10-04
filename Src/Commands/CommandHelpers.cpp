@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:50:40 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/29 10:15:28 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:58:13 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,15 @@ bool isNickValid(const std::string &nick)
 	return (true);
 }
 
-std::string normalizeNick(const std::string &newNick)
+std::string normalizeCase(const std::string &name)
 {
-	std::string norm = newNick;
+	std::string norm = name;
 
 	for(size_t i = 0; i < norm.size(); i++)
 	{
 		if (std::isalpha(norm[i]))
-		{
 			norm[i] = std::tolower(norm[i]);
-		}
+		
 		else 
 		{
 			if (norm[i] == '{')

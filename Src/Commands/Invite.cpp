@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 15:44:25 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/26 10:05:57 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	handleInvite(Server &server, Client &client, const Command &cmd)
 	std::string targetNick  = cmd.params[0];
 	std::string channelName = cmd.params[1];
 
-	Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
+	Client *targetClient = server.findClientByNick(normalizeCase(targetNick));
 	if (!targetClient)
 	{
 		client.sendNumericReply(server, ERR_NOSUCHNICK, targetNick, "No such nick");

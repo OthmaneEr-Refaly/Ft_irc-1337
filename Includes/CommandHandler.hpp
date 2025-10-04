@@ -35,7 +35,7 @@ void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 
 // ===== Helper Functions =====
 bool						isNickValid(const std::string &nick);
-std::string 				normalizeNick(const std::string &newNick);
+std::string 				normalizeCase(const std::string &newNick);
 std::vector<std::string>	splitTargets(const std::string targets);
 bool isValidChannelName(const std::string& channelName);
 

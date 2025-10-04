@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:28:01 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 10:44:52 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 	for (size_t i = 0; i < targets.size(); ++i)
 	{
 		std::string targetNick = targets[i];
-		Client *targetClient = server.findClientByNick(normalizeNick(targetNick));
+		Client *targetClient = server.findClientByNick(normalizeCase(targetNick));
 
 		if (!targetClient)
 		{
