@@ -1,93 +1,16 @@
-[MB]:
+for othman :
 
-- I need to take in count also the error msg length so it s not truncated.(if it mimics the irc servers) [SOLVED]
-	- test case:
-	{
-		➜  Ft_irc-1337 git:(montasser-branch) ✗ telnet localhost 44554
-		Trying 127.0.0.1...
-		Connected to localhost.
-		Escape character is '^]'.
-		join
-		ft_irc 451  JOIN :Password required
-		fff
-		ft_irc 451  FFF :Password required
-		fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
-		ft_irc 417  * :Input line too long, truncated
-		ft_irc 451  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-		f 
-		ft_irc 451  F :Password required
-	}
+JOIN :
 
-- Checking if user can run like in the example bellow or should i add a check for the ":" before the fullname [SOLVED]
-	-test case:
-	{
-		in client:
-		USER montassir 0 * montassir bouiraden
-		ft_irc 1 mo mo :Welcome to the IRC network mo!montassir@127.0.0.1
-		ft_irc 2 mo mo :Your host is ft_irc, running version sma9ma9
-		ft_irc 3 mo mo :This server was created Sun Sep 28 2025 at 17:38:45
-		ft_irc 4 mo mo :ft_irc laFin o itkl
-	
-		in server:
-		Parsed command from fd 4: [USER montassir 0 * montassir bouiraden]
-		this is the prefix
-		this is the command USER
-		this is the param[0] = montassir
-		this is the param[1] = 0
-		this is the param[2] = *
-		this is the param[3] = montassir
-		this is the param[4] = bouiraden
-	}
+In JOIN reply, fix the prefix to :<nick>!<user>@<host> JOIN :#chan (not just :nick JOIN).
+After that, always send:
+331 if no topic / 332 + 333 if topic exists
+353 with member list (@nick for op)
+366 end of names list
 
-- should an empty line pass as an error (SOLVED: explanation bellow)
-	- test case:
-	{
+MODE :
 
-	ft_irc 451 x\r\nNICK :You have not registered
+In MODE reply, fix the prefix to :<nick>!<user>@<host> MODE :#chan +itkl (not just :nick MODE #chan +itkl).
 
-	ft_irc 451 x\r\nNICK :You have not registered
-			
-	ft_irc 451 x\r\nNICK :You have not registered
-	}
-	same as this:
-	{
-		\r\n
-		ft_irc 451 x\r\nNICK \R\N :You have not registered
-	}
-	SOLVED explanation:
-	[If you really want to test the literal \r\n bytes, you need a raw tool like netcat (nc) or a script,
-	 not telnet, because telnet interprets input as text lines.]
-
-- should we take tab as a white space ?
-	-test case:
-	{
-		PASS        .
-		ft_irc 461  PASS :Not enough parameters
-		PASS		.           
-		Connection closed by foreign host.
-	}
-	PS: the dots i added them in this file so you can see where the white space stops.
-
-
-
-[OT]:
-
-- join kat segmanti awda hnini hhhh.
-	-test case:
-	{
-		in client:
-		ft_irc 1 ww ww :Welcome to the IRC network ww!wassel@127.0.0.1
-		ft_irc 2 ww ww :Your host is ft_irc, running version sma9ma9
-		ft_irc 3 ww ww :This server was created Mon Sep 29 2025 at 10:18:46
-		ft_irc 4 ww ww :ft_irc laFin o itkl
-		join #room
-		Connection closed by foreign host.
-
-		in server:
-		Parsed command from fd 4: [join #room]
-		this is the prefix
-		this is the command JOIN
-		this is the param[0] = #room
-		Debuging Processing JOIN command
-		[1]    1867090 segmentation fault (core dumped)  ./ft_irc 44554 montassir
-	}
+PART :
+ :opuser!opuser@<host> PART #edgecase :leaving

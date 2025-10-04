@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:28:01 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/03 13:10:40 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/04 10:44:52 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	handleKick(Server &server, Client &client, const Command &cmd)
 
 	if (!channel->isOperator(&client))
 	{
-		client.sendNumericReply(server, ERR_CHANOPRIVSNEEDED, "KICK", "You're not channel operator");
+		client.sendNumericReply(server, ERR_CHANOPRIVSNEEDED, channelName, "You're not channel operator");
 		return;
 	}
 
