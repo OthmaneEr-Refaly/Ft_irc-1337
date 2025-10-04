@@ -25,6 +25,8 @@ bool Channel::canJoin(Client* c, const std::string& key) const
 	return true;
 }
 
+
+
 void Channel::executeJoin(Server &server, Client* c, const std::string& key)
 {
     if (isMember(c))
@@ -41,6 +43,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
     if (canJoin(c, key))
     {
         addMember(c);
+		c->addChannel(_name);
         if (_members.size() == 1)
             addOperator(c);
         
@@ -92,6 +95,14 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 
         std::cout << "Debugging: Processing channel '" << channelName << "' with key '" << key << "'" << std::endl;
 
+        // new function for # ou &
+        if (!isValidChannelName(channelName))
+        {
+            std::cout << "Debugging: Invalid channel name '" << channelName << "'" << std::endl;
+            client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
+            continue;
+        }
+
         Channel* channel = server.getChannel(channelName);
         if (!channel)
         {
@@ -102,4 +113,25 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 
         channel->executeJoin(server, &client, key);
     }
+}
+
+bool isValidChannelName(const std::string& channelName) {
+    if (channelName.empty())
+        return false;
+
+    // Must start with '#' or '&'
+    if (channelName[0] != '#' && channelName[0] != '&')
+        return false;
+
+    // Must not exceed 200 characters
+    if (channelName.size() > 200)
+        return false;
+
+    // Must not contain spaces, commas, or control characters
+    for (size_t i = 0; i < channelName.size(); ++i) {
+        if (channelName[i] == ' ' || channelName[i] == ',' || iscntrl(channelName[i]))
+            return false;
+    }
+
+    return true;
 }

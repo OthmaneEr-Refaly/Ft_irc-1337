@@ -79,6 +79,11 @@ class Channel
 		void executeTopic(Server &server, Client* c, const std::string& topic);
 		void executeMode(Server &server, Client* c, const std::string& mode, const std::string& param);
 
+
+
+		
+
+
 };
 
 #endif
