@@ -77,8 +77,9 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
                 break;
 
             default:
+                std::cout << "Debugging: Unknown mode flag '" << modeChar << "'" << std::endl;
                 c->sendNumericReply(server, 501, std::string(1, modeChar), "Unknown mode flag");
-                break;
+                return;
         }
     }
 
