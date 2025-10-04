@@ -20,7 +20,7 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
 	{
 		std::cout << "Debugging: Client " << c->getNick() << " is not an operator and cannot change modes" << std::endl;
 		c->sendNumericReply(server, 482, _name, "You're not a channel operator");
-        return;
+		return;
 		return;
 	}
 
