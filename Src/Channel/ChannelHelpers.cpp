@@ -63,10 +63,8 @@
         return _invited_nicks.count(nick) > 0;
     }
 
-    void Channel::notifyMembers(Server &server, const std::string& message)
-	{
-        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
-		{
+    void Channel::notifyMembers(Server &server, const std::string& message) {
+        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
             server.sendMsgToClient(*it, message + "\r\n");
         }
     }
