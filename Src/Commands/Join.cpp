@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
+#include <string>
+#include <algorithm>
 
 bool Channel::canJoin(Client* c, const std::string& key) const
 {
@@ -25,7 +27,25 @@ bool Channel::canJoin(Client* c, const std::string& key) const
 	return true;
 }
 
+std::string normalizeChannelName(const std::string& channelName) {
+    std::string normalized = channelName;
 
+    for (size_t i = 0; i < normalized.size(); ++i) {
+        if (normalized[i] >= 'a' && normalized[i] <= 'z') {
+            normalized[i] = normalized[i] - ('a' - 'A');
+        }
+        else if (normalized[i] == '{') {
+            normalized[i] = '[';
+        } else if (normalized[i] == '}') {
+            normalized[i] = ']';
+        } else if (normalized[i] == '|') {
+            normalized[i] = '\\';
+        } else if (normalized[i] == '~') {
+            normalized[i] = '^';
+        }
+    }
+    return normalized;
+}
 
 void Channel::executeJoin(Server &server, Client* c, const std::string& key)
 {
@@ -90,12 +110,11 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 
     for (size_t i = 0; i < channels.size(); ++i)
     {
-        const std::string &channelName = channels[i];
+        std::string channelName = normalizeChannelName(channels[i]); // tfixtat sf
         std::string key = (i < keyList.size()) ? keyList[i] : "";
 
         std::cout << "Debugging: Processing channel '" << channelName << "' with key '" << key << "'" << std::endl;
 
-        // new function for # ou &
         if (!isValidChannelName(channelName))
         {
             std::cout << "Debugging: Invalid channel name '" << channelName << "'" << std::endl;
