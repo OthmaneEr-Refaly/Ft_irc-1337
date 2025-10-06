@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:44:49 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/24 09:33:41 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/06 09:12:47 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void handlePart(Server &server, Client &client, const Command &cmd)
 	std::cout << "debugging the Part CoMMANAD" << std::endl;
 	if(cmd.params.empty())
 	{
-		//do same as join hnaya''''''''''''''''''''
+		client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "PART", "Not enough parameters");
 		return;
 	}
 	std::string channelName = cmd.params[0];
