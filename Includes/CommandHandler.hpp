@@ -38,5 +38,6 @@ bool						isNickValid(const std::string &nick);
 std::string 				normalizeNick(const std::string &newNick);
 std::vector<std::string>	splitTargets(const std::string targets);
 bool isValidChannelName(const std::string& channelName);
+std::string normalizeChannelName(const std::string& channelName);
 
 #endif
