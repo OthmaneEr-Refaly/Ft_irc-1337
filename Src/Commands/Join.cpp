@@ -31,8 +31,8 @@ std::string normalizeChannelName(const std::string& channelName) {
     std::string normalized = channelName;
 
     for (size_t i = 0; i < normalized.size(); ++i) {
-        if (normalized[i] >= 'a' && normalized[i] <= 'z') {
-            normalized[i] = normalized[i] - ('a' - 'A');
+        if (normalized[i] >= 'A' && normalized[i] <= 'Z') {
+            normalized[i] = normalized[i] - ('A' - 'a');
         }
         else if (normalized[i] == '{') {
             normalized[i] = '[';
@@ -63,22 +63,52 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
     if (canJoin(c, key))
     {
         addMember(c);
-		c->addChannel(_name);
+        c->addChannel(_name);
         if (_members.size() == 1)
             addOperator(c);
         
         removeInvite(c->getNick());
 
-        notifyMembers(server, ":" + c->getNick() + " JOIN " + _name);
+        // Notify other members
+        std::string joinMessage = formatMessage(
+            c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+            "JOIN",
+            _name,
+            ""
+        );
+        notifyMembers(server, joinMessage);
 
-        if (!_topic.empty())
-            server.sendMsgToClient(c, ":" + _name + " TOPIC :" + _topic + "\r\n");
+        // Send the topic
+        if (!_topic.empty()) {
+            std::string topicMessage = formatMessage(
+                "ft_irc",
+                "332",
+                c->getNick() + " " + _name,
+                _topic
+            );
+            server.sendMsgToClient(c, topicMessage);
+        }
 
-        std::string memberList = ":";
-        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
+        // Send the names list
+        std::string memberList;
+        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
             memberList += (*it)->getNick() + " ";
+        }
+        std::string namesMessage = formatMessage(
+            "ft_irc",
+            "353",
+            c->getNick() + " = " + _name,
+            memberList
+        );
+        server.sendMsgToClient(c, namesMessage);
 
-        server.sendMsgToClient(c, memberList + "\r\n");
+        std::string endOfNamesMessage = formatMessage(
+            "ft_irc",
+            "366",
+            c->getNick() + " " + _name,
+            "End of /NAMES list"
+        );
+        server.sendMsgToClient(c, endOfNamesMessage);
     }
     else
     {
@@ -154,3 +184,4 @@ bool isValidChannelName(const std::string& channelName) {
 
     return true;
 }
+

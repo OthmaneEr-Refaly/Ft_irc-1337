@@ -14,25 +14,50 @@
 
 void Channel::executePart(Server &server, Client* c)
 {
-	if (isMember(c))
-	{
-		std::cout << "Debugging: Client " << c->getNick() << " is leaving channel " << _name << std::endl;
-		removeMember(c);
+    if (isMember(c))
+    {
+        std::cout << "Debugging: Client " << c->getNick() << " is leaving channel " << _name << std::endl;
+        removeMember(c);
 
-		if (isOperator(c))
-		{
-			removeOperator(c);
-			std::cout << "Debugging: Client " << c->getNick() << " was an operator and has been removed from operators list." << std::endl;
-			notifyMembers(server, ":" + c->getNick() + " PART " + _name + " :Operator has left the channel");
-		}
-		else
-			notifyMembers(server, ":" + c->getNick() + " PART " + _name);
+        // Notify other members
+        std::string partMessage = formatMessage(
+            c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+            "PART",
+            _name,
+            "Operator has left the channel"
+        );
 
-		server.sendMsgToClient(c, ":" + c->getNick() + " PART " + _name + " :You have left the channel\r\n");
-	}
-	
-	else
-		c->sendNumericReply(server, 442, _name, "You're not on that channel");
+        if (isOperator(c))
+        {
+            removeOperator(c);
+            std::cout << "Debugging: Client " << c->getNick() << " was an operator and has been removed from operators list." << std::endl;
+            notifyMembers(server, partMessage);
+        }
+        else
+        {
+            partMessage = formatMessage(
+                c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+                "PART",
+                _name,
+                ""
+            );
+            notifyMembers(server, partMessage);
+        }
+
+        // Send confirmation to the client
+        std::string clientMessage = formatMessage(
+            c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+            "PART",
+            _name,
+            "You have left the channel"
+        );
+        server.sendMsgToClient(c, clientMessage);
+    }
+    else
+    {
+        // Send error if the client is not in the channel
+        c->sendNumericReply(server, 442, _name, "You're not on that channel");
+    }
 }
 
 void handlePart(Server &server, Client &client, const Command &cmd)
@@ -57,6 +82,7 @@ void handlePart(Server &server, Client &client, const Command &cmd)
         Channel* channel = server.getChannel(channelName);
         if (!channel)
         {
+            // Send error if the channel does not exist
             client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
             continue;
         }
@@ -64,3 +90,4 @@ void handlePart(Server &server, Client &client, const Command &cmd)
         channel->executePart(server, &client);
     }
 }
+

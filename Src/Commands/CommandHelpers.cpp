@@ -75,3 +75,18 @@ std::string normalizeCase(const std::string &name)
 	}
 	return (norm);
 }
+
+std::string formatMessage(const std::string &prefix, const std::string &command, const std::string &params, const std::string &trailing) {
+    std::string message;
+    if (!prefix.empty()) {
+        message += ":" + prefix + " ";
+    }
+    message += command;
+    if (!params.empty()) {
+        message += " " + params;
+    }
+    if (!trailing.empty()) {
+        message += " :" + trailing;
+    }
+    return message + "\r\n";
+}
