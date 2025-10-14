@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 15:30:00 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:26:58 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,16 @@ void Server::run()
 	signal(SIGINT, Server::handleSignal);
 	signal(SIGTERM, Server::handleSignal);
 	
-	initListenSocket(); // Initialize the listening socket
+	initListenSocket();
 	if (!_running)
 		return;
 
-	time_t	now = time(NULL);
-	char	buffer[64];
-	strftime(buffer, sizeof(buffer), "%a %b %d %Y at %H:%M:%S", localtime(&now));
-	_creation_date = buffer;
+	setCreationDate();
 	
 	while(_running)
 	{
-		handlePollEvents(); // Handle events from clients and the Server
+		handlePollEvents();
 		
-		// loop to check if there is client that needs to be removed.
 		for (std::map<int, Client*>::iterator it = _fd_to_client.begin(); it != _fd_to_client.end(); )
 		{
 			Client *client = it->second;
@@ -108,9 +104,9 @@ void Server::handlePollEvents()
 			continue ;
 		}
 		if (result_event & POLLIN) 	// 2. Existing client sent data
-			handleClientRead(fd);
+			processClientInput(fd);
 		if (result_event & POLLOUT) // 3. Existing client ready to send
-			handleClientWrite(fd);
+			sendClientResponse(fd);
 		if (result_event & (POLLERR | POLLHUP | POLLNVAL)) // 4. Error or disconnection
 			disconnectClient(fd, "Connection closed");
 	}

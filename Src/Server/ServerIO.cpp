@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 16:37:51 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 16:48:43 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:27:31 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void Server::acceptNewClient()
 	std::cout << "New client connected (fd=" << client_fd << ")" << std::endl;
 }
 
-void Server::handleClientRead(int fd)
+void Server::processClientInput(int fd)
 {
 	// Find client by fd
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
@@ -102,7 +102,7 @@ void Server::handleClientRead(int fd)
 	// enableWriteInterest(fd);
 }
 
-void Server::handleClientWrite(int fd)
+void Server::sendClientResponse(int fd)
 {
 	// Find the client by fd
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);

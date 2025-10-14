@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:13:32 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/27 15:26:30 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/07 11:36:31 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,13 @@
 	const std::map<std::string, Channel*>&	Server::getChannels() const { return (_channels); }
 
 // ===== Setters =====
-	void Server::setRunning(bool value) { _running = value; }
+	void	Server::setRunning(bool value) { _running = value; }
+
+	void	Server::setCreationDate()
+	{
+		time_t	now = time(NULL);
+		char	buffer[64];
+		strftime(buffer, sizeof(buffer), "%a %b %d %Y at %H:%M:%S", localtime(&now));
+		_creation_date = buffer;	
+	}
 
