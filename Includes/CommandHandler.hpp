@@ -13,6 +13,7 @@ void			initCommandMap();
 void			dispatchCommand(Server &server, Client &client, const Command &cmd);
 
 // ===== Registration Commands =====
+	void			handleCap(Server &server, Client &client, const Command &cmd);
 	void			handlePass(Server &server, Client &client, const Command &cmd);
 	void			handleNick(Server &server, Client &client, const Command &cmd);
 	void			handleUser(Server &server, Client &client, const Command &cmd);
