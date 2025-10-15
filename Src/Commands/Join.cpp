@@ -81,8 +81,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
             addOperator(c);
 
         removeInvite(c->getNick());
-
-        // Notify other members
+		//send the corrct messages format to avoid garbage f hexchat.
         std::string joinMessage = formatMessage(
             c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
             "JOIN",
@@ -92,7 +91,6 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
         std::cout << "Debugging: Sending JOIN message: " << joinMessage << std::endl;
         notifyMembers(server, joinMessage);
 
-        // Send the topic
         if (!_topic.empty()) {
             std::string topicMessage = formatMessage(
                 "ft_irc",
@@ -104,7 +102,6 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
             server.sendMsgToClient(c, topicMessage);
         }
 
-        // Send the names list
         std::string memberList;
         for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
             memberList += (*it)->getNick() + " ";
