@@ -31,8 +31,8 @@ std::string normalizeChannelName(const std::string& channelName) {
     std::string normalized = channelName;
 
     for (size_t i = 0; i < normalized.size(); ++i) {
-        if (normalized[i] >= 'a' && normalized[i] <= 'z') {
-            normalized[i] = normalized[i] - ('a' - 'A');
+        if (normalized[i] >= 'A' && normalized[i] <= 'Z') {
+            normalized[i] = normalized[i] - ('A' - 'a');
         }
         else if (normalized[i] == '{') {
             normalized[i] = '[';
@@ -47,38 +47,82 @@ std::string normalizeChannelName(const std::string& channelName) {
     return normalized;
 }
 
+// std::string formatMessage(const std::string &prefix, const std::string &command, const std::string &params, const std::string &trailing) {
+//     std::string message;
+//     if (!prefix.empty()) {
+//         message += ":" + prefix + " ";
+//     }
+//     message += command;
+//     if (!params.empty()) {
+//         message += " " + params;
+//     }
+//     if (!trailing.empty()) {
+//         message += " :" + trailing;
+//     }
+//     return message + "\r\n";
+// }
+
 void Channel::executeJoin(Server &server, Client* c, const std::string& key)
 {
+    std::cout << "Debugging: Executing JOIN for client " << c->getNick() << " on channel " << _name << std::endl;
+
     if (isMember(c))
     {
+        std::cout << "Debugging: Client is already a member of the channel" << std::endl;
         c->sendNumericReply(server, 443, _name, "is already on channel");
         return;
-    }
-
-    if (_members.empty() && !_key.empty() && _key != key)
-    {
-        _key = key;
     }
 
     if (canJoin(c, key))
     {
         addMember(c);
-		c->addChannel(_name);
+        c->addChannel(_name);
         if (_members.size() == 1)
             addOperator(c);
-        
+
         removeInvite(c->getNick());
+		//send the corrct messages format to avoid garbage f hexchat.
+        std::string joinMessage = formatMessage(
+            c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+            "JOIN",
+            _name,
+            ""
+        );
+        std::cout << "Debugging: Sending JOIN message: " << joinMessage << std::endl;
+        notifyMembers(server, joinMessage);
 
-        notifyMembers(server, ":" + c->getNick() + " JOIN " + _name);
+        if (!_topic.empty()) {
+            std::string topicMessage = formatMessage(
+                "ft_irc",
+                "332",
+                c->getNick() + " " + _name,
+                _topic
+            );
+            std::cout << "Debugging: Sending topic message: " << topicMessage << std::endl;
+            server.sendMsgToClient(c, topicMessage);
+        }
 
-        if (!_topic.empty())
-            server.sendMsgToClient(c, ":" + _name + " TOPIC :" + _topic + "\r\n");
-
-        std::string memberList = ":";
-        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
+        std::string memberList;
+        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
             memberList += (*it)->getNick() + " ";
+        }
+        std::string namesMessage = formatMessage(
+            "ft_irc",
+            "353",
+            c->getNick() + " = " + _name,
+            memberList
+        );
+        std::cout << "Debugging: Sending NAMES message: " << namesMessage << std::endl;
+        server.sendMsgToClient(c, namesMessage);
 
-        server.sendMsgToClient(c, memberList + "\r\n");
+        std::string endOfNamesMessage = formatMessage(
+            "ft_irc",
+            "366",
+            c->getNick() + " " + _name,
+            "End of /NAMES list"
+        );
+        std::cout << "Debugging: Sending end of NAMES message: " << endOfNamesMessage << std::endl;
+        server.sendMsgToClient(c, endOfNamesMessage);
     }
     else
     {
@@ -110,7 +154,7 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
 
     for (size_t i = 0; i < channels.size(); ++i)
     {
-        std::string channelName = normalizeChannelName(channels[i]); // tfixtat sf
+        std::string channelName = normalizeChannelName(channels[i]);
         std::string key = (i < keyList.size()) ? keyList[i] : "";
 
         std::cout << "Debugging: Processing channel '" << channelName << "' with key '" << key << "'" << std::endl;
@@ -154,3 +198,5 @@ bool isValidChannelName(const std::string& channelName) {
 
     return true;
 }
+
+

@@ -40,5 +40,6 @@ std::string 				normalizeCase(const std::string &newNick);
 std::vector<std::string>	splitTargets(const std::string targets);
 bool isValidChannelName(const std::string& channelName);
 std::string normalizeChannelName(const std::string& channelName);
+std::string formatMessage(const std::string &prefix, const std::string& command, const std::string &params, const std::string &trailing);
 
 #endif

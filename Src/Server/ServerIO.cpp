@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 16:37:51 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/14 18:27:31 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:26:50 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 void Server::acceptNewClient()
 {
-	struct sockaddr_in client_addr;
-	socklen_t addr_len = sizeof(client_addr);
+    struct sockaddr_in client_addr;
+    socklen_t addr_len = sizeof(client_addr);
 
-	int client_fd = accept(_listen_fd, (struct sockaddr*)&client_addr, &addr_len);
-	if (client_fd == -1)
-	{
-		perror("accept");
-		return;
-	}
+    int client_fd = accept(_listen_fd, (struct sockaddr*)&client_addr, &addr_len);
+    if (client_fd == -1)
+    {
+        perror("accept");
+        return;
+    }
 
-	fcntl(client_fd, F_SETFL, O_NONBLOCK);
+    fcntl(client_fd, F_SETFL, O_NONBLOCK);
 
     // --- Get client IP/Host ---
     char host[INET_ADDRSTRLEN];
@@ -34,18 +34,22 @@ void Server::acceptNewClient()
         strcpy(host, "unknown");
     }
 
-	Client* new_client = new Client(client_fd);
-	new_client->setHost(host);
+    Client* new_client = new Client(client_fd);
+    new_client->setHost(host);
 
-	_fd_to_client[client_fd] = new_client;
+    _fd_to_client[client_fd] = new_client;
 
-	struct pollfd pfd;
-	pfd.fd = client_fd;
-	pfd.events = POLLIN;
-	pfd.revents = 0;  
-	_pollTable.push_back(pfd);
+    struct pollfd pfd;
+    pfd.fd = client_fd;
+    pfd.events = POLLIN;
+    pfd.revents = 0;  
+    _pollTable.push_back(pfd);
 
-	std::cout << "New client connected (fd=" << client_fd << ")" << std::endl;
+    std::cout << "New client connected (fd=" << client_fd << ")" << std::endl;
+
+    // hado ra bach ntesti Hexcaht
+    std::string welcomeMessage = ":ft_irc 001 " + new_client->getNick() + " :Welcome to the IRC network\r\n";
+    send(client_fd, welcomeMessage.c_str(), welcomeMessage.size(), 0);
 }
 
 void Server::processClientInput(int fd)
