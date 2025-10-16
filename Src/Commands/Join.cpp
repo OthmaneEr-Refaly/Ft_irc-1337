@@ -129,12 +129,10 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
     }
 }
 
-void handleJoin(Server &server, Client &client, const Command &cmd)
-{
+void handleJoin(Server &server, Client &client, const Command &cmd) {
     std::cout << "Debugging: Processing JOIN command" << std::endl;
 
-    if (cmd.params.empty())
-    {
+    if (cmd.params.empty()) {
         std::cout << "Debugging: No parameters provided for JOIN" << std::endl;
         client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "JOIN", "Not enough parameters");
         return;
@@ -146,26 +144,32 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
     const std::vector<std::string> channels = splitTargets(channelNames);
     const std::vector<std::string> keyList = splitTargets(keys);
 
-    for (size_t i = 0; i < channels.size(); ++i)
-    {
+    for (size_t i = 0; i < channels.size(); ++i) {
         std::string channelName = normalizeChannelName(channels[i]);
         std::string key = (i < keyList.size()) ? keyList[i] : "";
 
         std::cout << "Debugging: Processing channel '" << channelName << "' with key '" << key << "'" << std::endl;
 
-        if (!isValidChannelName(channelName))
-        {
+        if (!isValidChannelName(channelName)) {
             std::cout << "Debugging: Invalid channel name '" << channelName << "'" << std::endl;
             client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
             continue;
         }
 
+        // Validate the key (optional: add your own key validation logic)
+        if (!key.empty() && key[0] == '+') {
+            std::cout << "Debugging: Invalid key '" << key << "' (looks like a mode)" << std::endl;
+            client.sendNumericReply(server, ERR_BADCHANNELKEY, channelName, "Invalid key");
+            continue;
+        }
+
         Channel* channel = server.getChannel(channelName);
-        if (!channel)
-        {
+        if (!channel) {
             std::cout << "Debugging: Channel does not exist, creating new channel" << std::endl;
             channel = server.createChannel(channelName);
-            channel->setKey(key);
+            if (!key.empty()) {
+                channel->setKey(key); // Only set the key if it's valid
+            }
         }
 
         channel->executeJoin(server, &client, key);
