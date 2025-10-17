@@ -47,21 +47,6 @@ std::string normalizeChannelName(const std::string& channelName) {
     return normalized;
 }
 
-// std::string formatMessage(const std::string &prefix, const std::string &command, const std::string &params, const std::string &trailing) {
-//     std::string message;
-//     if (!prefix.empty()) {
-//         message += ":" + prefix + " ";
-//     }
-//     message += command;
-//     if (!params.empty()) {
-//         message += " " + params;
-//     }
-//     if (!trailing.empty()) {
-//         message += " :" + trailing;
-//     }
-//     return message + "\r\n";
-// }
-
 void Channel::executeJoin(Server &server, Client* c, const std::string& key)
 {
     std::cout << "Debugging: Executing JOIN for client " << c->getNick() << " on channel " << _name << std::endl;
@@ -100,6 +85,15 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
             );
             std::cout << "Debugging: Sending topic message: " << topicMessage << std::endl;
             server.sendMsgToClient(c, topicMessage);
+        } else {
+            std::string noTopicMessage = formatMessage(
+                "ft_irc",
+                "331",
+                c->getNick() + " " + _name,
+                "No topic is set"
+            );
+            std::cout << "Debugging: Sending no topic message: " << noTopicMessage << std::endl;
+            server.sendMsgToClient(c, noTopicMessage);
         }
 
         std::string memberList;
@@ -135,12 +129,10 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
     }
 }
 
-void handleJoin(Server &server, Client &client, const Command &cmd)
-{
+void handleJoin(Server &server, Client &client, const Command &cmd) {
     std::cout << "Debugging: Processing JOIN command" << std::endl;
 
-    if (cmd.params.empty())
-    {
+    if (cmd.params.empty()) {
         std::cout << "Debugging: No parameters provided for JOIN" << std::endl;
         client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "JOIN", "Not enough parameters");
         return;
@@ -152,26 +144,32 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
     const std::vector<std::string> channels = splitTargets(channelNames);
     const std::vector<std::string> keyList = splitTargets(keys);
 
-    for (size_t i = 0; i < channels.size(); ++i)
-    {
+    for (size_t i = 0; i < channels.size(); ++i) {
         std::string channelName = normalizeChannelName(channels[i]);
         std::string key = (i < keyList.size()) ? keyList[i] : "";
 
         std::cout << "Debugging: Processing channel '" << channelName << "' with key '" << key << "'" << std::endl;
 
-        if (!isValidChannelName(channelName))
-        {
+        if (!isValidChannelName(channelName)) {
             std::cout << "Debugging: Invalid channel name '" << channelName << "'" << std::endl;
             client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
             continue;
         }
 
+        // Validate the key (optional: add your own key validation logic)
+        if (!key.empty() && key[0] == '+') {
+            std::cout << "Debugging: Invalid key '" << key << "' (looks like a mode)" << std::endl;
+            client.sendNumericReply(server, ERR_BADCHANNELKEY, channelName, "Invalid key");
+            continue;
+        }
+
         Channel* channel = server.getChannel(channelName);
-        if (!channel)
-        {
+        if (!channel) {
             std::cout << "Debugging: Channel does not exist, creating new channel" << std::endl;
             channel = server.createChannel(channelName);
-            channel->setKey(key);
+            if (!key.empty()) {
+                channel->setKey(key); // Only set the key if it's valid
+            }
         }
 
         channel->executeJoin(server, &client, key);
