@@ -63,7 +63,16 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
         addMember(c);
         c->addChannel(_name);
         if (_members.size() == 1)
+		{
             addOperator(c);
+			std::string mmodeMessage = formatMessage(
+				"ft_irc",
+				"MODE",
+				_name,
+				"+o " + c->getNick()
+			);
+			notifyMembers(server, mmodeMessage);
+		}
 
         removeInvite(c->getNick());
 		//send the corrct messages format to avoid garbage f hexchat.
