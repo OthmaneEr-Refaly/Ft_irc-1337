@@ -63,9 +63,12 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
         addMember(c);
         c->addChannel(_name);
         if (_members.size() == 1)
+        {
             addOperator(c);
+        }
+
         removeInvite(c->getNick());
-		//send the corrct messages format to avoid garbage f hexchat.
+
         std::string joinMessage = formatMessage(
             c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
             "JOIN",
