@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 17:13:05 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:40:59 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:29:16 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
               << " with password " << password << std::endl;
 
     Server server(port, password);
-    server.run();
+	server.run();
 	server.stop();
 
     return 0;

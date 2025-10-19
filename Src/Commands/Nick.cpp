@@ -6,16 +6,11 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:48:39 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/18 11:55:09 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../Includes/Server.hpp"
-#include "../../Includes/Client.hpp"
-#include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
-#include "../../Includes/CommandHandler.hpp"
-#include "../../Includes/NumericReplies.hpp"
 
 void	handleNick(Server &server, Client &client, const Command &cmd)
 {
@@ -47,10 +42,30 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 		server.unregisterNickname(oldNormNick);
 	}
 	
+	std::string oldNick = client.getNick();
 	client.setNick(newNick);
 	server.registerNickname(normNick, &client);
 
-	std::cout << normNick << std::endl;
-	
-	server.tryRegister(client);	
+	if (client.isRegistered())
+	{
+		std::string nickMsg = ":" + oldNick + "!" + client.getUser() + "@" + client.getHost()
+							+ " NICK :" + newNick + "\r\n";
+
+		const std::set<std::string>& channels = client.getChannels();
+		for (std::set<std::string>::const_iterator it = channels.begin(); it != channels.end(); ++it)
+		{
+			Channel *chan = server.getChannel(*it);
+			if (!chan)
+				continue;
+
+			const std::set<Client*>& members = chan->getMembers();
+			for (std::set<Client*>::const_iterator mit = members.begin(); mit != members.end(); ++mit)
+			{
+				if (*mit != &client)
+					server.sendMsgToClient(*mit, nickMsg);
+			}
+		}
+	}
+	else
+		server.tryRegister(client);	
 }
