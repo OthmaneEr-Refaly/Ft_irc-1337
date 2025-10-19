@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:48:39 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/18 11:55:09 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/19 13:55:49 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,13 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
 	std::string oldNick = client.getNick();
 	client.setNick(newNick);
 	server.registerNickname(normNick, &client);
-
+	
 	if (client.isRegistered())
 	{
 		std::string nickMsg = ":" + oldNick + "!" + client.getUser() + "@" + client.getHost()
-							+ " NICK :" + newNick + "\r\n";
-
+		+ " NICK :" + newNick + "\r\n";
+		
+		server.sendMsgToClient(&client, nickMsg);
 		const std::set<std::string>& channels = client.getChannels();
 		for (std::set<std::string>::const_iterator it = channels.begin(); it != channels.end(); ++it)
 		{
