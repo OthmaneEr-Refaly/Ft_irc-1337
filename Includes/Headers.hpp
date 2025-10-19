@@ -13,6 +13,7 @@
 
 // ===== C++ standard headers =====
 #include <iostream>      // std::cout, std::cerr
+#include <iomanip>		 // std::setw, std::setfill
 #include <string>        // std::string
 #include <vector>        // std::vector
 #include <map>           // std::map

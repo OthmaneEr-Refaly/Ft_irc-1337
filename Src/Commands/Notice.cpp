@@ -6,16 +6,11 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 15:36:42 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 18:57:38 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:41:36 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../Includes/Server.hpp"
-#include "../../Includes/Client.hpp"
-#include "../../Includes/Channel.hpp"
 #include "../../Includes/Headers.hpp"
-#include "../../Includes/CommandHandler.hpp"
-#include "../../Includes/NumericReplies.hpp"
 
 std::string noticeMsgFormat(Client &client, const std::string &target, const std::string &msg)
 {

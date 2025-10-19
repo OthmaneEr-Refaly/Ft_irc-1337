@@ -38,8 +38,8 @@ class Server
 	void	acceptNewClient();
 	void	removeClient(int fd);
 	void	handlePollEvents();
-	void	handleClientRead(int fd);
-	void	handleClientWrite(int fd);
+	void	processClientInput(int fd);
+	void	sendClientResponse(int fd);
 	
 	// ===== New Poll helper functions =====
 	int		findPollIndex(int fd) const;
@@ -66,6 +66,7 @@ class Server
 	
 	// ===== Setters =====
 	void 		setRunning(bool value);
+	void		setCreationDate();
 	
 	// ===== Main control =====
 	void 		run();  // Start the server loop

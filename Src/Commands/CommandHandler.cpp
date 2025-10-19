@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/09/26 11:04:57 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:39:43 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	initCommandMap()
 	commandMap["TOPIC"]   = handleTopic;
 	commandMap["QUIT"]    = handleQuit;
 	commandMap["NOTICE"]  = handleNotice;
+	commandMap["CAP"]	  = handleNotice;
 }
 
 void	dispatchCommand(Server &server, Client &client, const Command &cmd)
@@ -37,7 +38,10 @@ void	dispatchCommand(Server &server, Client &client, const Command &cmd)
         handleQuit(server, client, cmd);
         return;
     }
-    
+ 
+	if (cmd.command == "CAP")
+		return;
+	
 	if (!client.isPassOk())
     {
         if (cmd.command == "PASS")
