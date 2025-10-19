@@ -70,6 +70,57 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
                     _limit = 0;
                 }
                 break;
+			case 'o' :
+				if (addMode){
+					if (paramStream >> currentParam){
+						Client* targetClient = server.findClientByNick(currentParam);
+						if(!targetClient){
+							std::cout << "Debugging : Target client not found for +o mode" << currentParam << std::endl;
+							c->sendNumericReply(server,401,currentParam,"No such nick/channel");
+							return;
+						}
+						
+						addOperator(targetClient);
+						std::cout << "Debugging Granted operator status to " << currentParam << std::endl;
+
+						std::string modeMessage = formatMessage(
+							c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+							"MODE",
+							_name + " +o " + currentParam,
+							""
+						);
+						notifyMembers(server, modeMessage);
+					} else {
+						std::cout << "Debugging : Not enough parameters for +o mode" << std::endl;
+						c->sendNumericReply(server,461,"MODE","Not enough parameters for +o");
+						return;
+					}
+				} else {
+					if (paramStream >> currentParam) {
+						Client* targetClient = server.findClientByNick(currentParam);
+						if(!targetClient){
+							std::cout << "Debugging : Target client not found for -o mode" << currentParam << std::endl;
+							c->sendNumericReply(server,401,currentParam,"No such nick/channel");
+							return;
+						}
+
+						removeOperator(targetClient);
+						std::cout << "Debugging Revoked operator status from " << currentParam << std::endl;
+
+						std::string modeMessage = formatMessage(
+							c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+							"MODE",
+							_name + " -o " + currentParam,
+							""
+						);
+						notifyMembers(server, modeMessage);
+					} else {
+						std::cout << "Debugging : Not enough parameters for -o mode" << std::endl;
+						c->sendNumericReply(server,461,"MODE","Not enough parameters for -o");
+						return;
+					}
+				}
+				break;
 
             default:
                 c->sendNumericReply(server, 501, std::string(1, modeChar), "Unknown mode flag");

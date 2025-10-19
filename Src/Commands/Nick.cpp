@@ -65,6 +65,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
                             + " NICK :" + newNick + "\r\n";
         std::cout << "Debugging: Sending NICK message to channel members: " << nickMsg << std::endl;
 
+        server.sendMsgToClient(&client, nickMsg);
         const std::set<std::string>& channels = client.getChannels();
         for (std::set<std::string>::const_iterator it = channels.begin(); it != channels.end(); ++it)
         {
@@ -80,7 +81,7 @@ void	handleNick(Server &server, Client &client, const Command &cmd)
             {
                 if (*mit != &client)
                 {
-                    std::cout << "Debugging: Sending NICK message to member: " << (*mit)->getNick() << std::endl;
+                    std::cout << "Debuggingwwwww: Sending NICK message to member: " << (*mit)->getNick() << std::endl;
                     server.sendMsgToClient(*mit, nickMsg);
                 }
             }
