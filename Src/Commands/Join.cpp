@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:40:52 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 16:18:01 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 15:34:18 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
 
         if (!_topic.empty()) {
             std::string topicMessage = formatMessage(
-                "ft_irc",
+                "ircserv",
                 "332",
                 c->getNick() + " " + _name,
                 _topic
@@ -89,7 +89,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
             server.sendMsgToClient(c, topicMessage);
         } else {
             std::string noTopicMessage = formatMessage(
-                "ft_irc",
+                "ircserv",
                 "331",
                 c->getNick() + " " + _name,
                 "No topic is set"
@@ -108,7 +108,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
         }
 
         std::string namesMessage = formatMessage(
-            "ft_irc",
+            "ircserv",
             "353",
             c->getNick() + " = " + _name,
             memberList
@@ -117,7 +117,7 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
         server.sendMsgToClient(c, namesMessage);
 
         std::string endOfNamesMessage = formatMessage(
-            "ft_irc",
+            "ircserv",
             "366",
             c->getNick() + " " + _name,
             "End of /NAMES list"

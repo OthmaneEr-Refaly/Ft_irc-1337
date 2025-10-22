@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 17:13:05 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/14 18:29:16 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 15:34:18 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
     if (argc != 3)
     {
-        std::cout << "Usage: ./ft_irc <port> <password>" << std::endl;
+        std::cout << "Usage: ./ircserv <port> <password>" << std::endl;
         return 1;
     }
 

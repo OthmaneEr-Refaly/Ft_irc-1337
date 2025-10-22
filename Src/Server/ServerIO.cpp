@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 16:37:51 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/15 15:26:50 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 15:31:33 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void Server::acceptNewClient()
 {
-    struct sockaddr_in client_addr;
-    socklen_t addr_len = sizeof(client_addr);
+    struct sockaddr_in	client_addr;
+    socklen_t 			addr_len = sizeof(client_addr);
 
     int client_fd = accept(_listen_fd, (struct sockaddr*)&client_addr, &addr_len);
     if (client_fd == -1)
@@ -46,22 +46,17 @@ void Server::acceptNewClient()
     _pollTable.push_back(pfd);
 
     std::cout << "New client connected (fd=" << client_fd << ")" << std::endl;
-
-    // hado ra bach ntesti Hexcaht
-    std::string welcomeMessage = ":ft_irc 001 " + new_client->getNick() + " :Welcome to the IRC network\r\n";
-    send(client_fd, welcomeMessage.c_str(), welcomeMessage.size(), 0);
 }
 
 void Server::processClientInput(int fd)
 {
-	// Find client by fd
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
 	if (it == _fd_to_client.end())
-		return; // client not found, maybe already removed
+		return;
 
 	Client &client = *(it->second);
 
-	char	buffer[512];  // IRC recommends max line length = 512 bytes
+	char	buffer[512];
 	ssize_t bytes_read = recv(fd, buffer, sizeof(buffer) - 1, 0);
 
 	if (bytes_read <= 0)
@@ -69,7 +64,7 @@ void Server::processClientInput(int fd)
 		Command quitCmd;
 		quitCmd.command = "QUIT";
 
-		if (bytes_read == 0) // Client disconnected (0)
+		if (bytes_read == 0)
 			quitCmd.params.push_back("Client disconnected");
 		
 		else
@@ -84,8 +79,7 @@ void Server::processClientInput(int fd)
 	std::string data(buffer, bytes_read);
 	client.appendToInbuf(data);
 
-	std::vector<std::string> lines = client.popCompleteLines(); // Extract complete lines (commands ending with "\r\n")
-	std::cout << lines.size() << std::endl;
+	std::vector<std::string> lines = client.popCompleteLines();
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		std::string line = lines[i];
@@ -100,41 +94,28 @@ void Server::processClientInput(int fd)
 		Command cmd = parseRawLine(line);
 		dispatchCommand(*this, client, cmd);
 	}
-
-	// // ===== TEST: send a reply back =====
-	// client.enqueueOutput("Hello from server!\r\n");
-	// enableWriteInterest(fd);
 }
 
 void Server::sendClientResponse(int fd)
 {
-	// Find the client by fd
 	std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
 	if (it == _fd_to_client.end())
-		return; // if no more client return
+		return;
 
 	Client* client = it->second;
 	std::string &out = client->getOutbufRef();
 
-	// If Nothing to send → stop listening for POLLOUT
 	if (out.empty()) 
 	{
 		disableWriteInterest(fd);
 		return;
 	}
 
-	// Try to send from the beginning of _outbuf
-	#ifdef MSG_NOSIGNAL
-		ssize_t n = send(fd, out.data(), out.size(), MSG_NOSIGNAL);
-	#else
-		ssize_t n = send(fd, out.data(), out.size(), 0);
-	#endif
-
+	ssize_t n = send(fd, out.data(), out.size(), MSG_NOSIGNAL);
+		
 	if (n > 0) 
 	{
-		// Remove the part we just sent
-		out.erase(0, static_cast<size_t>(n));
-
+		out.erase(0, (size_t)n);
 		if (out.empty()) 
 		{
 			// When everything is sent stop POLLOUT
@@ -143,11 +124,8 @@ void Server::sendClientResponse(int fd)
 		return;
 	}
 
-	// Error handling
 	if (n == -1)
 	{
-		// Unexpected error, log + cleanup
-		std::cerr << "send() error on fd " << fd << ": " << strerror(errno) << std::endl;
 		disconnectClient(fd, "Send error");
 		return;
 	}

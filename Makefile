@@ -10,7 +10,7 @@
 	# @echo "━━━━━━━━━┃ Leader d project howa : \033[1;91mMontasiiiir\033[m ┃━━━━━━━━━"
 	# @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-NAME        = ft_irc
+NAME        = ircserv
 CXX         = c++
 CXXFLAGS    = -Wall -Wextra -Werror -std=c++98
 
@@ -159,7 +159,7 @@ success:
 	@echo "║                                                                          ║"
 	@echo "║    $(BWHITE)🎉 COMPILATION SUCCESSFUL! 🎉$(BGREEN)                                         ║"
 	@echo "║                                                                          ║"
-	@echo "║    $(BCYAN)✨ Your ft_irc server is ready to rock! ✨$(BGREEN)                            ║"
+	@echo "║    $(BCYAN)✨ Your ircserv server is ready to rock! ✨$(BGREEN)                            ║"
 	@echo "║                                                                          ║"
 	@echo "║    $(BYELLOW)Usage: ./$(NAME) <port> <password>$(BGREEN)                                     ║"
 	@echo "║                                                                          ║"
