@@ -5,8 +5,10 @@
 #include <map>
 #include <vector>
 
+
 class Client;
 class Channel;
+class Bot;
 
 struct Command 
 {
@@ -45,6 +47,9 @@ class Server
 	int		findPollIndex(int fd) const;
 	void	enableWriteInterest(int fd);
 	void	disableWriteInterest(int fd);
+
+	// ===== Bot =====
+	Bot* _bot;
 	
 	
 	public:
@@ -93,9 +98,14 @@ class Server
 	// ===== Messaging functions =====
 	void		sendMsgToClient(Client *client, const std::string &msg);
 	std::string	enforceMessageLength(const std::string &rawMessage);
+	void		sendMsgToChannel(Channel &chan, const std::string &message, Client *sender);
 	
 	static Server*	g_instance;
 	static void	handleSignal(int signum);
+
+	// ===== Bot management =====
+	void initBot();
+	Bot* getBot() const;
 };
 
 #endif

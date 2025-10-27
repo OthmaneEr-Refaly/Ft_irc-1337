@@ -26,6 +26,7 @@ void Server::run()
 		return;
 
 	setCreationDate();
+	initBot();
 	
 	while(_running)
 	{

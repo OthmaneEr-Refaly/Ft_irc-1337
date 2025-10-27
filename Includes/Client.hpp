@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <vector>
+class Server;
 
 class Client
 {

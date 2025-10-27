@@ -54,6 +54,7 @@ BG_WHITE    = \033[47m
 SRCS        = Src/main.cpp \
               Src/Client/Client.cpp \
               Src/Client/ClientHelpers.cpp \
+			  Src/Client/Bot.cpp \
               Src/Channel/Channel.cpp \
               Src/Channel/ChannelHelpers.cpp \
               Src/Server/Server.cpp \
