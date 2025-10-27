@@ -23,6 +23,7 @@ class Server
 	// ===== Configuration =====
 	int				_port;
 	std::string		_password;
+
 	
 	// ===== Networking state =====
 	int							_listen_fd; // Listening socket fd
@@ -34,6 +35,9 @@ class Server
 	std::map<int, Client*>				_fd_to_client;
 	std::map<std::string, Client*>		_nick_to_client;
 	std::map<std::string, Channel*>		_channels;
+	
+	// // ===== Bot =====
+	Bot* 			_bot;
 	
 	// ===== Internal helpers (defined in .cpp) =====
 	void	initListenSocket();
@@ -47,9 +51,6 @@ class Server
 	int		findPollIndex(int fd) const;
 	void	enableWriteInterest(int fd);
 	void	disableWriteInterest(int fd);
-
-	// ===== Bot =====
-	Bot* _bot;
 	
 	
 	public:
@@ -106,6 +107,7 @@ class Server
 	// ===== Bot management =====
 	void initBot();
 	Bot* getBot() const;
+	void connectBot();
 };
 
 #endif

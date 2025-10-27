@@ -27,6 +27,8 @@ void Server::run()
 
 	setCreationDate();
 	initBot();
+	connectBot();
+	
 	
 	while(_running)
 	{

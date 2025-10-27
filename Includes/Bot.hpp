@@ -2,8 +2,7 @@
 #define BOT_HPP
 
 #include <string>
-#include <set>
-#include <vector>
+#include <ctime> 
 #include <iostream>
 #include "Client.hpp"
 #include "Server.hpp"
@@ -30,6 +29,7 @@ class Bot : public Client
     public:
         Bot();
         ~Bot();
+        Bot(int fd);
 
         void respondToMessage(Server &server, Client &sender, const std::string &message, const std::string &target);
 };
