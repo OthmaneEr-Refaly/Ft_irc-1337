@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:44:49 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/06 09:34:26 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/28 14:19:47 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void Channel::executePart(Server &server, Client* c)
             "Operator has left the channel"
         );
 
-        if (isOperator(c))
+        if (isOperator(c)) 
         {
             removeOperator(c);
             std::cout << "Debugging: Client " << c->getNick() << " was an operator and has been removed from operators list." << std::endl;
