@@ -6,13 +6,11 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:13:32 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/21 09:28:54 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/28 10:53:34 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
-
-	Server* Server::g_instance = NULL;
 
 // ===== Canonical form ===== (Server can't be copied or assigned)
 	Server::Server()
