@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:59:05 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/03 16:03:39 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 15:34:18 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,12 @@
 	{
 		std::string			reply;
 		std::stringstream	s_code;
-
-		s_code << code;
+		
+		// Always pad numeric code to 3 digits
+		s_code << std::setw(3) << std::setfill('0') << code;
 
 		// Format: ":server <code> <nickname> <arg> :<message>\r\n"
-		reply += "ft_irc ";
+		reply += ":ircserv ";
 		reply += s_code.str() + " ";
 		reply += _nick + " ";
 		
@@ -84,3 +85,4 @@
 		server.sendMsgToClient(this, reply);
 	}
 	
+

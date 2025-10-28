@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
+#include "../../Includes/CommandHandler.hpp"
 
 void Channel::executeMode(Server &server, Client* c, const std::string& mode, const std::string& param) {
     std::cout << "Debugging: executeMode called by client " << c->getNick() << " on channel " << _name << std::endl;
@@ -24,8 +25,6 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
     std::stringstream paramStream(param);
     std::string currentParam;
 
-    std::cout << "Debugging: paramStream contents: '" << param << "'" << std::endl;
-
     for (size_t i = 0; i < mode.size(); ++i) {
         char modeChar = mode[i];
 
@@ -37,26 +36,22 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
             continue;
         }
 
-        std::cout << "Debugging: Processing mode flag '" << modeChar << "' with addMode=" << addMode << std::endl;
-
         switch (modeChar) {
             case 'i':
                 _mode_invite_only = addMode;
-                std::cout << "Debugging: Invite-only mode set to " << _mode_invite_only << std::endl;
                 break;
 
             case 't':
                 _mode_topic_ops_only = addMode;
-                std::cout << "Debugging: Topic-ops-only mode set to " << _mode_topic_ops_only << std::endl;
                 break;
 
             case 'k':
                 if (addMode) {
                     if (paramStream >> currentParam) {
-                        std::cout << "Debugging: Extracted parameter for +k: '" << currentParam << "'" << std::endl;
                         _key = currentParam;
                     } else {
                         c->sendNumericReply(server, 461, "MODE", "Not enough parameters for +k");
+                        return;
                     }
                 } else {
                     _key.clear();
@@ -66,24 +61,83 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
             case 'l':
                 if (addMode) {
                     if (paramStream >> currentParam) {
-                        std::cout << "Debugging: Extracted parameter for +l: '" << currentParam << "'" << std::endl;
                         _limit = std::atoi(currentParam.c_str());
                     } else {
                         c->sendNumericReply(server, 461, "MODE", "Not enough parameters for +l");
+                        return;
                     }
                 } else {
                     _limit = 0;
                 }
                 break;
+			case 'o' :
+				if (addMode){
+					if (paramStream >> currentParam){
+						Client* targetClient = server.findClientByNick(currentParam);
+						if(!targetClient){
+							std::cout << "Debugging : Target client not found for +o mode" << currentParam << std::endl;
+							c->sendNumericReply(server,401,currentParam,"No such nick/channel");
+							return;
+						}
+						
+						addOperator(targetClient);
+						std::cout << "Debugging Granted operator status to " << currentParam << std::endl;
+
+						std::string modeMessage = formatMessage(
+							c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+							"MODE",
+							_name + " +o " + currentParam,
+							""
+						);
+						notifyMembers(server, modeMessage);
+					} else {
+						std::cout << "Debugging : Not enough parameters for +o mode" << std::endl;
+						c->sendNumericReply(server,461,"MODE","Not enough parameters for +o");
+						return;
+					}
+				} else {
+					if (paramStream >> currentParam) {
+						Client* targetClient = server.findClientByNick(currentParam);
+						if(!targetClient){
+							std::cout << "Debugging : Target client not found for -o mode" << currentParam << std::endl;
+							c->sendNumericReply(server,401,currentParam,"No such nick/channel");
+							return;
+						}
+
+						removeOperator(targetClient);
+						std::cout << "Debugging Revoked operator status from " << currentParam << std::endl;
+
+						std::string modeMessage = formatMessage(
+							c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+							"MODE",
+							_name + " -o " + currentParam,
+							""
+						);
+						notifyMembers(server, modeMessage);
+					} else {
+						std::cout << "Debugging : Not enough parameters for -o mode" << std::endl;
+						c->sendNumericReply(server,461,"MODE","Not enough parameters for -o");
+						return;
+					}
+				}
+				break;
 
             default:
-                std::cout << "Debugging: Unknown mode flag '" << modeChar << "'" << std::endl;
                 c->sendNumericReply(server, 501, std::string(1, modeChar), "Unknown mode flag");
                 return;
         }
     }
 
-    notifyMembers(server, ":" + c->getNick() + " MODE " + _name + " " + mode + " " + param);
+    // Notify channel members of the mode change
+    notifyMembers(server, formatMessage(
+        c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+        "MODE",
+        _name + " " + mode,
+        param
+    ));
+
+    // Send confirmation to the client
+    c->sendNumericReply(server, 324, _name, "+" + mode + " " + param);
 }
 
 void handleMode(Server &server, Client &client, const Command &cmd) {
@@ -114,3 +168,5 @@ void handleMode(Server &server, Client &client, const Command &cmd) {
 
     channel->executeMode(server, &client, mode, param);
 }
+
+

@@ -6,49 +6,13 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:12:59 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 17:07:46 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 15:44:23 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
 #include "../../Includes/Bot.hpp"
 
-
-// // ===== Client management =====
-// void Server::disconnectClient(int fd, const std::string &reason)
-// {
-//     std::map<int, Client*>::iterator it = _fd_to_client.find(fd);
-//     if (it == _fd_to_client.end())
-//         return;
-
-//     Client *client = it->second;
-
-//     if (client->isClosing())
-//         return;
-
-//     std::string prefix = ":" + client->getNick() + "!" + client->getUser() + "@" + client->getHost();
-//     std::string quitMsg = prefix + " QUIT :" + (reason.empty() ? "Client disconnected" : reason) + "\r\n";
-
-//     const std::set<std::string> &chans = client->getChannels();
-//     for (std::set<std::string>::const_iterator chit = chans.begin(); chit != chans.end(); ++chit)
-//     {
-//         Channel* chan = getChannel(*chit);
-//         if (!chan) continue;
-
-//         const std::set<Client*> &members = chan->getMembers();
-//         for (std::set<Client*>::const_iterator mit = members.begin(); mit != members.end(); ++mit)
-//         {
-//             Client* member = *mit;
-//             if (member->getFd() == fd) // skip the quitting client
-//                 continue;
-//             sendMsgToClient(member, quitMsg);
-//         }
-//     }
-
-//     client->markForClose();
-
-//     std::cout << "marked Client Fd=" << fd << " for close ( reason: " << reason << " )" << std::endl;
-// }
 
 // ===== Client management =====
 void Server::disconnectClient(int fd, const std::string &reason)
@@ -114,13 +78,13 @@ void	Server::tryRegister(Client &client)
 	"Welcome to the IRC network " + client.getNick() + "!" + client.getUser() + "@" + client.getHost());
 
 	client.sendNumericReply(*this, RPL_YOURHOST, client.getNick(),
-	"Your host is ft_irc, running version sma9ma9");
+	"Your host is ircserv, running version 1.0");
 
 	client.sendNumericReply(*this, RPL_CREATED, client.getNick(),
 	"This server was created " + getCreationDate());
 
 	client.sendNumericReply(*this, RPL_MYINFO, client.getNick(),
-	"ft_irc laFin o itkl"/*message:"Server name, version, supported user & channel modes*/);  
+	"ircserv 1.0 _ oitkl"/*message:"Server name, version, supported user & channel modes*/);  
 }
 
 // ===== Nickname management =====

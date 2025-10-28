@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 16:11:29 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/14 18:26:58 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 16:09:08 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void Server::run()
 
 void Server::stop()
 {
-	std::cout << "Stopping server gracefully..." << std::endl;
+	std::cout << "Stopping server gracefully... \n https://www.youtube.com/watch?v=AFoIP7dPQM8" << std::endl;
 	_running = false;
 
 	if (_listen_fd != -1)
@@ -66,6 +66,18 @@ void Server::stop()
 		disconnectClient(client->getFd(), "Server shutting down");
 	}
 
+	for (std::map<int, Client*>::iterator it = _fd_to_client.begin(); it != _fd_to_client.end(); )
+	{
+		Client *client = it->second;
+		if(client->isClosing())
+		{
+			++it;
+			removeClient(client->getFd());
+		}
+		else
+			++it;
+	}
+	
 	_pollTable.clear();
 	_fd_to_client.clear();
 	_nick_to_client.clear();
@@ -83,34 +95,31 @@ void Server::handlePollEvents()
 
 	if (ready == -1)
 	{
-		std::cerr << "poll failed: ";
-		perror("poll");
 		_running = false;
 		return ;
 	}
 
 	if (ready == 0)
 		return ;
-
 	
 	for (size_t i = 0; i < _pollTable.size(); i++)
 	{
 		int fd = _pollTable[i].fd;
 		int result_event = _pollTable[i].revents;
 		
-		if (result_event == 0) // no events.
+		if (result_event == 0)
 			continue ;
 
-		if (fd == _listen_fd && (result_event & POLLIN)) // 1. New connection on listening socket
+		if (fd == _listen_fd && (result_event & POLLIN))
 		{
 			acceptNewClient();
 			continue ;
 		}
-		if (result_event & POLLIN) 	// 2. Existing client sent data
+		if (result_event & POLLIN)
 			processClientInput(fd);
-		if (result_event & POLLOUT) // 3. Existing client ready to send
+		if (result_event & POLLOUT)
 			sendClientResponse(fd);
-		if (result_event & (POLLERR | POLLHUP | POLLNVAL)) // 4. Error or disconnection
+		if (result_event & (POLLERR | POLLHUP | POLLNVAL))
 			disconnectClient(fd, "Connection closed");
 	}
 } 

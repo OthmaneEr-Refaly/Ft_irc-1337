@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:40:52 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/04 16:18:01 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/22 15:34:18 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ std::string normalizeChannelName(const std::string& channelName) {
     std::string normalized = channelName;
 
     for (size_t i = 0; i < normalized.size(); ++i) {
-        if (normalized[i] >= 'a' && normalized[i] <= 'z') {
-            normalized[i] = normalized[i] - ('a' - 'A');
+        if (normalized[i] >= 'A' && normalized[i] <= 'Z') {
+            normalized[i] = normalized[i] - ('A' - 'a');
         }
         else if (normalized[i] == '{') {
             normalized[i] = '[';
@@ -49,36 +49,81 @@ std::string normalizeChannelName(const std::string& channelName) {
 
 void Channel::executeJoin(Server &server, Client* c, const std::string& key)
 {
+    std::cout << "Debugging: Executing JOIN for client " << c->getNick() << " on channel " << _name << std::endl;
+
     if (isMember(c))
     {
+        std::cout << "Debugging: Client is already a member of the channel" << std::endl;
         c->sendNumericReply(server, 443, _name, "is already on channel");
         return;
-    }
-
-    if (_members.empty() && !_key.empty() && _key != key)
-    {
-        _key = key;
     }
 
     if (canJoin(c, key))
     {
         addMember(c);
-		c->addChannel(_name);
+        c->addChannel(_name);
         if (_members.size() == 1)
+        {
             addOperator(c);
-        
+        }
+
         removeInvite(c->getNick());
 
-        notifyMembers(server, ":" + c->getNick() + " JOIN " + _name);
+        std::string joinMessage = formatMessage(
+            c->getNick() + "!" + c->getUser() + "@" + c->getHost(),
+            "JOIN",
+            _name,
+            ""
+        );
+        std::cout << "Debugging: Sending JOIN message: " << joinMessage << std::endl;
+        notifyMembers(server, joinMessage);
 
-        if (!_topic.empty())
-            server.sendMsgToClient(c, ":" + _name + " TOPIC :" + _topic + "\r\n");
+        if (!_topic.empty()) {
+            std::string topicMessage = formatMessage(
+                "ircserv",
+                "332",
+                c->getNick() + " " + _name,
+                _topic
+            );
+            std::cout << "Debugging: Sending topic message: " << topicMessage << std::endl;
+            server.sendMsgToClient(c, topicMessage);
+        } else {
+            std::string noTopicMessage = formatMessage(
+                "ircserv",
+                "331",
+                c->getNick() + " " + _name,
+                "No topic is set"
+            );
+            std::cout << "Debugging: Sending no topic message: " << noTopicMessage << std::endl;
+            server.sendMsgToClient(c, noTopicMessage);
+        }
 
-        std::string memberList = ":";
-        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
-            memberList += (*it)->getNick() + " ";
+        std::string memberList;
+        for (std::set<Client*>::iterator it = _members.begin(); it != _members.end(); ++it) {
+            if (isOperator(*it)) {
+                memberList += "@" + (*it)->getNick() + " ";
+            } else {
+                memberList += (*it)->getNick() + " ";
+            }
+        }
 
-        server.sendMsgToClient(c, memberList + "\r\n");
+        std::string namesMessage = formatMessage(
+            "ircserv",
+            "353",
+            c->getNick() + " = " + _name,
+            memberList
+        );
+        std::cout << "Debugging: Sending NAMES message: " << namesMessage << std::endl;
+        server.sendMsgToClient(c, namesMessage);
+
+        std::string endOfNamesMessage = formatMessage(
+            "ircserv",
+            "366",
+            c->getNick() + " " + _name,
+            "End of /NAMES list"
+        );
+        std::cout << "Debugging: Sending end of NAMES message: " << endOfNamesMessage << std::endl;
+        server.sendMsgToClient(c, endOfNamesMessage);
     }
     else
     {
@@ -91,12 +136,10 @@ void Channel::executeJoin(Server &server, Client* c, const std::string& key)
     }
 }
 
-void handleJoin(Server &server, Client &client, const Command &cmd)
-{
+void handleJoin(Server &server, Client &client, const Command &cmd) {
     std::cout << "Debugging: Processing JOIN command" << std::endl;
 
-    if (cmd.params.empty())
-    {
+    if (cmd.params.empty()) {
         std::cout << "Debugging: No parameters provided for JOIN" << std::endl;
         client.sendNumericReply(server, ERR_NEEDMOREPARAMS, "JOIN", "Not enough parameters");
         return;
@@ -108,26 +151,32 @@ void handleJoin(Server &server, Client &client, const Command &cmd)
     const std::vector<std::string> channels = splitTargets(channelNames);
     const std::vector<std::string> keyList = splitTargets(keys);
 
-    for (size_t i = 0; i < channels.size(); ++i)
-    {
-        std::string channelName = normalizeChannelName(channels[i]); // tfixtat sf
+    for (size_t i = 0; i < channels.size(); ++i) {
+        std::string channelName = normalizeChannelName(channels[i]);
         std::string key = (i < keyList.size()) ? keyList[i] : "";
 
         std::cout << "Debugging: Processing channel '" << channelName << "' with key '" << key << "'" << std::endl;
 
-        if (!isValidChannelName(channelName))
-        {
+        if (!isValidChannelName(channelName)) {
             std::cout << "Debugging: Invalid channel name '" << channelName << "'" << std::endl;
             client.sendNumericReply(server, ERR_NOSUCHCHANNEL, channelName, "No such channel");
             continue;
         }
 
+        // Validate the key (optional: add your own key validation logic)
+        if (!key.empty() && key[0] == '+') {
+            std::cout << "Debugging: Invalid key '" << key << "' (looks like a mode)" << std::endl;
+            client.sendNumericReply(server, ERR_BADCHANNELKEY, channelName, "Invalid key");
+            continue;
+        }
+
         Channel* channel = server.getChannel(channelName);
-        if (!channel)
-        {
+        if (!channel) {
             std::cout << "Debugging: Channel does not exist, creating new channel" << std::endl;
             channel = server.createChannel(channelName);
-            channel->setKey(key);
+            if (!key.empty()) {
+                channel->setKey(key); // Only set the key if it's valid
+            }
         }
 
         channel->executeJoin(server, &client, key);
@@ -154,3 +203,5 @@ bool isValidChannelName(const std::string& channelName) {
 
     return true;
 }
+
+
