@@ -10,6 +10,7 @@
 		"cmath": "cpp",
 		"compare": "cpp",
 		"concepts": "cpp",
+		"csignal": "cpp",
 		"cstdarg": "cpp",
 		"cstddef": "cpp",
 		"cstdint": "cpp",
@@ -57,8 +58,7 @@
 		"text_encoding": "cpp",
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
-		"variant": "cpp",
-		"csignal": "cpp"
+		"variant": "cpp"
 	},
 	"cSpell.words": [
 		"Privmsg"

@@ -6,7 +6,7 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 16:13:32 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/28 10:57:22 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/10/28 11:07:54 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,6 @@
 
 	Server::Server(int port, const std::string& password)
 		: _port(port), _password(password), _listen_fd(-1), _running(false), _bot(NULL) {}
-
-	Server::Server(const Server& other)
-	{
-		*this = other;
-	}
 
 	Server::~Server() {
 		// delete _bot;
