@@ -5,8 +5,10 @@
 #include <map>
 #include <vector>
 
+
 class Client;
 class Channel;
+class Bot;
 
 struct Command 
 {
@@ -21,6 +23,7 @@ class Server
 	// ===== Configuration =====
 	int				_port;
 	std::string		_password;
+
 	
 	// ===== Networking state =====
 	int							_listen_fd; // Listening socket fd
@@ -32,6 +35,9 @@ class Server
 	std::map<int, Client*>				_fd_to_client;
 	std::map<std::string, Client*>		_nick_to_client;
 	std::map<std::string, Channel*>		_channels;
+	
+	// // ===== Bot =====
+	Bot* 			_bot;
 	
 	// ===== Internal helpers (defined in .cpp) =====
 	void	initListenSocket();
@@ -93,9 +99,15 @@ class Server
 	// ===== Messaging functions =====
 	void		sendMsgToClient(Client *client, const std::string &msg);
 	std::string	enforceMessageLength(const std::string &rawMessage);
+	void		sendMsgToChannel(Channel &chan, const std::string &message, Client *sender);
 	
 	static Server*	g_instance;
 	static void	handleSignal(int signum);
+
+	// ===== Bot management =====
+	void initBot();
+	Bot* getBot() const;
+	void connectBot();
 };
 
 #endif

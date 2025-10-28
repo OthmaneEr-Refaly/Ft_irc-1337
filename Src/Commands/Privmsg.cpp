@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
+#include "../../Includes/Bot.hpp"
+
 
 std::string privmsgFormat(Client &client, const std::string &target, const std::string &msg)
 {
@@ -64,11 +66,25 @@ void	handlePrivmsg(Server &server, Client &client, const Command &cmd) // the ca
 					server.sendMsgToClient(*it, formattedMsg);
 				}
 			}
+			Bot *bot = server.getBot();
+			if (bot && chan->isMember(bot))
+			{
+				bot->respondToMessage(server, client,msg, target);
+			}
 		}
 
 		else
 		{
 			std::string normNick = normalizeCase(target);
+			 if (normNick == "bot")
+            {
+                Bot *bot = server.getBot();
+                if (bot)
+                {
+                    bot->respondToMessage(server, client, msg, target);
+                }
+                continue;
+            }
 			if (!server.isNicknameInUse(normNick))
 			{
 				client.sendNumericReply(server, ERR_NOSUCHNICK, target, "No such nick/channel");
