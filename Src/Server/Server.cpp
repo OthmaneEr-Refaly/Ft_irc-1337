@@ -21,11 +21,6 @@
 	Server::Server(int port, const std::string& password)
 		: _port(port), _password(password), _listen_fd(-1), _running(false), _bot(NULL) {}
 
-	Server::Server(const Server& other)
-	{
-		*this = other;
-	}
-
 	Server::~Server() {
 		// delete _bot;
 	}

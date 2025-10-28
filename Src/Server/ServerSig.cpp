@@ -12,6 +12,8 @@
 
 #include "../../Includes/Headers.hpp"
 
+Server* Server::g_instance = NULL;
+
 void Server::handleSignal(int signum)
 {
 	 if (g_instance)
