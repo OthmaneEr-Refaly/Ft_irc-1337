@@ -36,5 +36,7 @@
 #include <csignal>		 // signal(), SIGINT...
 #include <ctype.h>
 #include <cstddef>
+#include <ctime> 
+#include <cstdlib>
 
 #endif

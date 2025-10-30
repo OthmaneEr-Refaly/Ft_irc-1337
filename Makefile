@@ -78,6 +78,7 @@ SRCS        = Src/main.cpp \
 			  Src/Commands/Join.cpp \
 			  Src/Commands/Part.cpp \
 			  Src/Commands/Topic.cpp \
+			  Src/Commands/Cap.cpp \
 			  Src/Commands/Quit.cpp
 
 OBJS        = $(SRCS:.cpp=.o)
