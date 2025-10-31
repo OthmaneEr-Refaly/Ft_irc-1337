@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
+#include "../../Includes/Bot.hpp"
 #include <string>
 #include <algorithm>
 
@@ -180,6 +181,13 @@ void handleJoin(Server &server, Client &client, const Command &cmd) {
         }
 
         channel->executeJoin(server, &client, key);
+        if (server.getBot() && !channel->isMember(server.getBot()))
+        {
+            channel->executeJoin(server, server.getBot(), "");
+            std::string joinMsg = ":" + server.getBot()->getNick() + "!bot@localhost JOIN " + normalizeChannelName(channelName) + "\r\n";
+            channel->notifyMembers(server, joinMsg);
+            std::cout << "debug Bot joined channel: " << normalizeChannelName(channelName) << std::endl;
+        }
     }
 }
 

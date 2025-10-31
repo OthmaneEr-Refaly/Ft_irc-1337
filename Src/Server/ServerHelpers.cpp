@@ -134,13 +134,7 @@ Channel* Server::createChannel(const std::string& channelName)
 	Channel* newChannel = new Channel(channelName);
 	_channels[channelName] = newChannel;
 	std::cout << "debab Channel created and added to map: " << channelName << std::endl;
-	if (_bot)
-    {
-        newChannel->executeJoin(*this,_bot,"");
-        std::string joinMsg = ":" + _bot->getNick() + "!bot@localhost JOIN " + normalizeChannelName(channelName) + "\r\n";
-        newChannel->notifyMembers(*this, joinMsg);
-        std::cout << "debug Bot joined channel: " << normalizeChannelName(channelName) << std::endl;
-    }
+	
 	return newChannel;
 }
 
