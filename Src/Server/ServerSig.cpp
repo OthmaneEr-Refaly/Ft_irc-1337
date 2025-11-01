@@ -13,11 +13,13 @@
 #include "../../Includes/Headers.hpp"
 
 Server* Server::g_instance = NULL;
+bool Server::_siged = false;
 
 void Server::handleSignal(int signum)
 {
 	 if (g_instance)
     {
+        _siged = true;
         std::cout << "\nReceived signal " << signum << ", stopping server..." << std::endl;
         g_instance->stop();
     }

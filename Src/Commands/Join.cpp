@@ -172,7 +172,8 @@ void handleJoin(Server &server, Client &client, const Command &cmd) {
         }
 
         Channel* channel = server.getChannel(channelName);
-        if (!channel) {
+        if (!channel) 
+        {
             std::cout << "Debugging: Channel does not exist, creating new channel" << std::endl;
             channel = server.createChannel(channelName);
             if (!key.empty()) {
@@ -184,9 +185,6 @@ void handleJoin(Server &server, Client &client, const Command &cmd) {
         if (server.getBot() && !channel->isMember(server.getBot()))
         {
             channel->executeJoin(server, server.getBot(), "");
-            std::string joinMsg = ":" + server.getBot()->getNick() + "!bot@localhost JOIN " + normalizeChannelName(channelName) + "\r\n";
-            channel->notifyMembers(server, joinMsg);
-            std::cout << "debug Bot joined channel: " << normalizeChannelName(channelName) << std::endl;
         }
     }
 }

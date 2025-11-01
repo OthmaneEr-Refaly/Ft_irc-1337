@@ -12,17 +12,6 @@
 
     }
 
-    Bot::Bot(int fd) {
-            
-            setPassOk(true);
-            setFd(fd);
-            setRegistered(true);
-            setHost("localhost");
-            setNick("bot");		
-            setRealname("user_bot");
-            setUser("bot");
-        }
-
 
     Bot::~Bot(){}
 

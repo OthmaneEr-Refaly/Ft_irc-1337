@@ -54,6 +54,7 @@ class Server
 	
 	
 	public:
+
 	// ===== Canonical form =====
 	Server();
 	Server(int port, const std::string& password);
@@ -102,6 +103,7 @@ class Server
 	void		sendMsgToChannel(Channel &chan, const std::string &message, Client *sender);
 	
 	static Server*	g_instance;
+	static bool						_siged;   // a signal sent
 	static void	handleSignal(int signum);
 
 	// ===== Bot management =====

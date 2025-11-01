@@ -27,7 +27,7 @@ void Server::run()
 
 	setCreationDate();
 	initBot();
-	connectBot();
+	//connectBot();
 	
 	
 	while(_running)
@@ -44,7 +44,7 @@ void Server::run()
 			}
 			else
 				++it;
-		}
+		}		
 	}
 }
 
@@ -52,6 +52,7 @@ void Server::stop()
 {
 	std::cout << "Stopping server gracefully... \n https://www.youtube.com/watch?v=AFoIP7dPQM8" << std::endl;
 	_running = false;
+
 
 	if (_listen_fd != -1)
 	{
@@ -78,10 +79,28 @@ void Server::stop()
 			++it;
 	}
 	
+	// Clean channels safely
+    for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+    {
+        delete it->second;
+    }
+    _channels.clear();
+
+    // Remove bot safely
+    if (_bot)
+    {
+        _fd_to_client.erase(_bot->getFd());
+        _nick_to_client.erase(_bot->getNick());
+        delete _bot;
+        _bot = NULL;
+    }
+
 	_pollTable.clear();
 	_fd_to_client.clear();
 	_nick_to_client.clear();
-	_channels.clear();
+	// _channels.clear();
+	_creation_date.clear();
+	// delete _bot;
 }
 
 void Server::handlePollEvents()

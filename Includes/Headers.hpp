@@ -5,6 +5,7 @@
 #define IRC_MAX_CONTENT (IRC_MAX_LINE - 2)
 
 // ===== Local / Project headers =====
+#include "Bot.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
