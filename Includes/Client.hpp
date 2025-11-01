@@ -32,7 +32,7 @@ class Client
 				Client();
 				Client(const Client& other);
 		Client&	operator=(const Client& other);
-				~Client();
+				virtual ~Client();
 				Client(int fd);
 
 	// ===== Getters =====
