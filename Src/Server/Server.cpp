@@ -21,9 +21,7 @@
 	Server::Server(int port, const std::string& password)
 		: _port(port), _password(password), _listen_fd(-1), _running(false), _bot(NULL) {}
 
-	Server::~Server() {
-		// delete _bot;
-	}
+	Server::~Server() {}
 
 // ===== Getters =====
 	int 									Server::getPort() const { return (_port); }
@@ -50,8 +48,6 @@
 	{
 		_bot = new Bot();
 		_nick_to_client["bot"] = _bot;
-
-		std::cout << YELLOW <<"Bot initialized :: " <<RESET << std::endl;
 	}
 
 	Bot*	Server::getBot() const
@@ -62,8 +58,6 @@
 	void Server::sendMsgToChannel(Channel &chan, const std::string &message, Client *sender)
 	{
 		const std::set<Client*>& members = chan.getMembers();
-		std::cout << RED<<"DEBUG: Sending message to channel " << chan.getName() <<RESET<< std::endl;
-		std::cout << GREEN<<"DEBUG: Message content: " <<RESET<< message;
 
 		for (std::set<Client*>::iterator it = members.begin(); it != members.end(); ++it)
 		{
@@ -74,13 +68,8 @@
 				std::cout << YELLOW<<"DEBUG: Sending to member: " << member->getNick() <<RESET<< std::endl;
 				sendMsgToClient(member, message);
 			}
-			else
-			{
-				std::cout <<BLUE<< "DEBUG: Skipping sender: " << member->getNick() <<RESET<< std::endl;
-			}
 		}
 	}
-
 
 	void	Server::connectBot()
 	{
@@ -116,7 +105,6 @@
 		}
 
 		Client* new_client = new Bot(bot_fd);
-		//new_client->setHost(host);
 
 		_fd_to_client[bot_fd] = new_client;
 		
