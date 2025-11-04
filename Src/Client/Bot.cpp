@@ -9,7 +9,7 @@
         setUser("bot");
         setRealname("user_bot");		
         setHost("localhost");
-
+        setFd(-1);
     }
 
 
