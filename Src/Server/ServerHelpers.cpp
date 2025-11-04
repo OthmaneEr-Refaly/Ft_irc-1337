@@ -78,13 +78,13 @@ void	Server::tryRegister(Client &client)
 	"Welcome to the IRC network " + client.getNick() + "!" + client.getUser() + "@" + client.getHost());
 
 	client.sendNumericReply(*this, RPL_YOURHOST, client.getNick(),
-	"Your host is ircserv, running version 1.0");
+	"Your host is ircserv, running version 2.0");
 
 	client.sendNumericReply(*this, RPL_CREATED, client.getNick(),
 	"This server was created " + getCreationDate());
 
 	client.sendNumericReply(*this, RPL_MYINFO, client.getNick(),
-	"ircserv 1.0 _ oitkl"/*message:"Server name, version, supported user & channel modes*/);  
+	"ircserv 2.0 _ oitkl"/*message:"Server name, version, supported user & channel modes*/);  
 }
 
 // ===== Nickname management =====
