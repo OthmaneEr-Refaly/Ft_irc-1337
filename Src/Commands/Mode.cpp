@@ -79,6 +79,12 @@ void Channel::executeMode(Server &server, Client* c, const std::string& mode, co
 							c->sendNumericReply(server,401,currentParam,"No such nick/channel");
 							return;
 						}
+
+                        // Prevent the bot from being given +o mode
+                        if (targetClient->getNick() == "bot") {
+                        c->sendNumericReply(server, 482, _name, "Cannot give operator privileges to the bot");
+                        return;
+                        }
 						
 						addOperator(targetClient);
 						std::cout << "Debugging Granted operator status to " << currentParam << std::endl;

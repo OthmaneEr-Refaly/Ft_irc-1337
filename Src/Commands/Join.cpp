@@ -197,6 +197,10 @@ bool isValidChannelName(const std::string& channelName) {
     if (channelName[0] != '#' && channelName[0] != '&')
         return false;
 
+    // Must have at least one character after '#' or '&'
+    if (channelName.size() == 1)
+        return false;
+
     // Must not exceed 200 characters
     if (channelName.size() > 200)
         return false;
