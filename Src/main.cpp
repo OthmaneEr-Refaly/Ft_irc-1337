@@ -51,10 +51,11 @@ int main(int argc, char **argv)
     // --- Start server ---
     std::cout << "Server is running on port " << port
               << " with password " << password << std::endl;
-
+    std::srand(std::time(0));
     Server server(port, password);
 	server.run();
-	server.stop();
+    if (!server._siged)
+	    server.stop();
 
     return 0;
 }

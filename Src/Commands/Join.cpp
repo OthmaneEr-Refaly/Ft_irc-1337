@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
+#include "../../Includes/Bot.hpp"
 #include <string>
 #include <algorithm>
 
@@ -171,7 +172,8 @@ void handleJoin(Server &server, Client &client, const Command &cmd) {
         }
 
         Channel* channel = server.getChannel(channelName);
-        if (!channel) {
+        if (!channel) 
+        {
             std::cout << "Debugging: Channel does not exist, creating new channel" << std::endl;
             channel = server.createChannel(channelName);
             if (!key.empty()) {
@@ -180,6 +182,10 @@ void handleJoin(Server &server, Client &client, const Command &cmd) {
         }
 
         channel->executeJoin(server, &client, key);
+        if (server.getBot() && !channel->isMember(server.getBot()))
+        {
+            channel->executeJoin(server, server.getBot(), "");
+        }
     }
 }
 

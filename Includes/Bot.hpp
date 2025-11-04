@@ -3,6 +3,7 @@
 
 #include <string>
 #include <ctime> 
+#include <cstdlib>  
 #include <iostream>
 #include "Client.hpp"
 #include "Server.hpp"
