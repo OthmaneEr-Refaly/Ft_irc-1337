@@ -6,13 +6,13 @@
 /*   By: mobouifr <mobouifr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 10:06:18 by mobouifr          #+#    #+#             */
-/*   Updated: 2025/10/28 10:54:11 by mobouifr         ###   ########.fr       */
+/*   Updated: 2025/11/04 09:00:52 by mobouifr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../Includes/Headers.hpp"
 
-static std::map<std::string, CommandFunction> commandMap; // need to undestand deeply how this map static declaration will work, and why using it as a static.
+static std::map<std::string, CommandFunction> commandMap;
 
 void	initCommandMap()
 {
