@@ -1,6 +1,7 @@
 # FT_IRC - C++ IRC Server
 
-![IRC Server Logo/Banner]([https://via.placeholder.com/800x200?text=FT_IRC+Server+Banner](https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9))
+![IRC Server Logo/Banner]([<img width="1948" height="928" alt="image" src="https://github.com/user-attachments/assets/04ae933d-528d-493d-a58a-4e398156b05b" />
+))
 
 ## Brief Overview
 This project is a custom implementation of an Internet Relay Chat (IRC) server written in C++98. It is designed to be fully compliant with standard IRC clients (such as Irssi or Netcat) allowing users to connect, communicate, and manage channels. The server handles multiplexing using `poll()` for non-blocking I/O operations and enables multiple clients to chat and interact concurrently. 
