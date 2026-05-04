@@ -70,3 +70,12 @@ Once connected, you can interact with the server using standard IRC commands:
 - `/MODE <channel> <+|-mode> [params]` - Modify channel modes (e.g., `i` for invite-only, `t` for topic restriction, `k` for passwords, `o` for operators, `l` for limits)
 - `/PART <channel>` - Leave a channel
 - `/QUIT` - Disconnect from the server
+
+## Useful Resources
+Here are some excellent resources that helped in building this project, and will be valuable for anyone looking to understand IRC and socket programming:
+
+- **[RFC 1459: Internet Relay Chat Protocol](https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.1)** ⭐ *(The most important and useful core documentation for understanding IRC commands and replies!)*
+- [Article: Small IRC Server (ft_irc) Overview](https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9)
+- [Guide/Video: Socket Programming Tutorial](https://www.youtube.com/watch?v=8afhcpiMh24)
+- [Guide/Video: Multiplexing with poll()](https://www.youtube.com/watch?v=dEHZb9JsmOU&t=799s)
+- [Guide/Video: Networking in C++](https://youtu.be/NvZEZ-mZsuI?si=eAWSeY_2iltSxEs7)
